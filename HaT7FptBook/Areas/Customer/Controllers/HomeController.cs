@@ -6,9 +6,11 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using HaT7FptBook.Models;
+using HaT7FptBook.Utility;
 
 namespace HaT7FptBook.Controllers
 {
+    [Area(SD.Area_Customer)]
     public class HomeController : Controller
     {
         private readonly ILogger<HomeController> _logger;
