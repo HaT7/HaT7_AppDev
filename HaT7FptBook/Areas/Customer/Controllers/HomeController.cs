@@ -8,7 +8,7 @@ using Microsoft.Extensions.Logging;
 using HaT7FptBook.Models;
 using HaT7FptBook.Utility;
 
-namespace HaT7FptBook.Controllers
+namespace HaT7FptBook.Areas.Customer.Controllers
 {
     [Area(SD.Area_Customer)]
     public class HomeController : Controller

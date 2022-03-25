@@ -1,0 +1,46 @@
+﻿@model IList<HaT7FptBook.Models.ApplicationUser>
+
+@{
+    ViewBag.Title = "View all User";
+    Layout = "_Layout";
+}
+
+<h2>List User</h2>
+<a href="/Identity/Account/Register" class="btn btn-primary">Create new User</a>
+
+<table style="width: 100%">
+    <tr>
+        <th>No</th>
+        <th>Name</th>
+        <th>Email</th>
+        <th>Address</th>
+        <th>Role</th>
+        <th>Action</th>
+    </tr>
+    @{ var i = 1; }
+    @foreach (var user in @Model)
+    {
+        <tr>
+            <td>@i</td>
+            <td>@user.FullName</td>
+            <td>@user.Email</td>
+            <td>@user.Address</td>
+            <td>@user.Role</td>
+            <td>
+                @if (user.LockoutEnd == null || user.LockoutEnd < DateTime.Now)
+                {
+                    <a asp-controller="Users" asp-action="LockUnLock" asp-route-id="@user.Id" class="btn btn-info">Lock</a>
+                }
+                else
+                {
+                    <a asp-controller="Users" asp-action="LockUnLock" asp-route-id="@user.Id" class="btn btn-info">UnLock</a>
+                }
+
+                <a asp-controller="Users" asp-action="Update" asp-route-id="@user.Id" class="btn btn-info">Edit</a>
+                <a asp-controller="Users" asp-action="ConfirmEmail" asp-route-id="@user.Id" class="btn btn-success">Reset Password</a>
+                <a asp-controller="Users" asp-action="Delete" asp-route-id="@user.Id" class="btn btn-danger" onclick="return confirm('Do you want delete this item?')">Delete</a>
+            </td>
+        </tr>
+        i++;
+    }
+</table>

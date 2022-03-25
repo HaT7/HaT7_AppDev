@@ -1,0 +1,37 @@
+﻿@model HaT7FptBook.ViewModels.UpdateUserVM
+
+@{
+    ViewBag.Title = "Edit User";
+    Layout = "_Layout";
+}
+
+<h2>Edit User</h2>
+
+<form method="post">
+    <input asp-for="ApplicationUser.Id" hidden/>
+    <div class="form-group">
+        <label asp-for="ApplicationUser.FullName"></label>
+        <input asp-for="ApplicationUser.FullName" class="form-control">
+        <span asp-validation-for="ApplicationUser.FullName" class="text-danger"></span>
+    </div>
+
+    <div class="form-group">
+        <label asp-for="ApplicationUser.PhoneNumber"></label>
+        <input asp-for="ApplicationUser.PhoneNumber" class="form-control">
+        <span asp-validation-for="ApplicationUser.PhoneNumber" class="text-danger"></span>
+    </div>
+
+    <div class="form-group">
+        <label asp-for="ApplicationUser.Address"></label>
+        <input asp-for="ApplicationUser.Address" class="form-control">
+        <span asp-validation-for="ApplicationUser.Address" class="text-danger"></span>
+    </div>
+    
+    <div class="form-group">
+        <label asp-for="Role"></label>
+        @Html.DropDownListFor(a => a.Role, Model.RoleList, "-Select Role", new {@class = "form-control"})
+        <span asp-validation-for="Role" class="text-danger"></span>
+    </div>
+    
+    <button type="submit" class="btn btn-primary">Submit</button>
+</form>
