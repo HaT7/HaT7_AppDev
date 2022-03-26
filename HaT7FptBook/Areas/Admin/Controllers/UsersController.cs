@@ -34,6 +34,7 @@ namespace HaT7FptBook.Areas.Admin.Controllers
 
         //============================== INDEX =====================================
         [HttpGet]
+        [Authorize(Roles = SD.Role_Admin)]
         public async Task<IActionResult> Index()
         {
             var claimIdentity = (ClaimsIdentity) User.Identity;
