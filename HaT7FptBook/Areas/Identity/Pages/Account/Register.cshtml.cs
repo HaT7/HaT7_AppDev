@@ -19,8 +19,7 @@ using Microsoft.Extensions.Logging;
 
 namespace HaT7FptBook.Areas.Identity.Pages.Account
 {
-    [Area(SD.Area_Admin)]
-    [Authorize(Roles = SD.Role_Admin)]
+    [AllowAnonymous]
     public class RegisterModel : PageModel
     {
         private readonly SignInManager<IdentityUser> _signInManager;
@@ -70,14 +69,11 @@ namespace HaT7FptBook.Areas.Identity.Pages.Account
 
             [Required] public string FullName { get; set; }
             [Required] public string Address { get; set; }
-            public string Role { get; set; }
-            public IEnumerable<SelectListItem> RoleList { get; set; }
         }
 
         public async Task OnGetAsync(string returnUrl = null)
         {
             ReturnUrl = returnUrl;
-            GetRole();
             ExternalLogins = (await _signInManager.GetExternalAuthenticationSchemesAsync()).ToList();
         }
 
@@ -101,20 +97,7 @@ namespace HaT7FptBook.Areas.Identity.Pages.Account
                 {
                     _logger.LogInformation("User created a new account with password.");
 
-                    if (Input.Role == "Admin")
-                    {
-                        await _userManager.AddToRoleAsync(user, "Admin");
-                    }
-
-                    if (Input.Role == "Customer")
-                    {
-                        await _userManager.AddToRoleAsync(user, "Customer");
-                    }
-
-                    if (Input.Role == "StoreOwner")
-                    {
-                        await _userManager.AddToRoleAsync(user, "StoreOwner");
-                    }
+                    await _userManager.AddToRoleAsync(user, "Customer");
 
                     var code = await _userManager.GenerateEmailConfirmationTokenAsync(user);
                     code = WebEncoders.Base64UrlEncode(Encoding.UTF8.GetBytes(code));
@@ -145,21 +128,8 @@ namespace HaT7FptBook.Areas.Identity.Pages.Account
                 }
             }
 
-            GetRole();
             // If we got this far, something failed, redisplay form
             return Page();
-        }
-
-        private void GetRole()
-        {
-            Input = new InputModel()
-            {
-                RoleList = _roleManager.Roles.Select(a => a.Name).Select(a => new SelectListItem
-                {
-                    Text = a,
-                    Value = a
-                })
-            };
         }
     }
 }

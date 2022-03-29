@@ -1,0 +1,42 @@
+﻿@model IList<HaT7FptBook.Models.Product>
+
+@{
+    ViewBag.Title = "Product";
+    Layout = "_Layout";
+}
+
+<h2>List Product</h2>
+<a asp-controller="Products" asp-action="UpSert" class="btn btn-primary">Create new product</a>
+
+<table style="width: 100%">
+    <tr>
+        <th>Id</th>
+        <th>Name</th>
+        <th>Description</th>
+        <th>Author</th>
+        <th>No Page</th>
+        <th>Price</th>
+        <th>Category Name</th>
+        <th>Action</th>
+    </tr>
+
+    @{ var i = 1; }
+    @foreach (var product in @Model)
+    {
+        <tr>
+            <td>@product.Id</td>
+            <td>@product.Title</td>
+            <td>@product.Description</td>
+            <td>@product.Author</td>
+            <td>@product.NoPage</td>
+            <td>@product.Price</td>
+            <td>@product.Category.Name</td>
+
+            <td>
+                <a asp-controller="Products" asp-action="UpSert" asp-route-id="@product.Id" class="btn btn-info">Edit</a>
+                <a asp-controller="Products" asp-action="Delete" asp-route-id="@product.Id" class="btn btn-danger" onclick="return confirm('Do you want delete this item?')">Delete</a>
+            </td>
+        </tr>
+        i++;
+    }
+</table>

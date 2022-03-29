@@ -1,0 +1,33 @@
+﻿@model IList<HaT7FptBook.Models.Category>
+
+@{
+    ViewBag.Title = "View all Category";
+    Layout = "_Layout";
+}
+
+<h2>List Category</h2>
+<a asp-controller="Categories" asp-action="UpSert" class="btn btn-primary">Create new Category</a>
+
+<table style="width: 100%">
+    <tr>
+        <th>Category Id</th>
+        <th>Name</th>
+        <th>Description</th>
+        <th>Action</th>
+    </tr>
+
+    @{ var i = 1; }
+    @foreach (var category in @Model)
+    {
+        <tr>
+            <td>@category.Id</td>
+            <td>@category.Name</td>
+            <td>@category.Description</td>
+            <td>
+                <a asp-controller="Categories" asp-action="UpSert" asp-route-id="@category.Id" class="btn btn-info">Edit</a>
+                <a asp-controller="Categories" asp-action="Delete" asp-route-id="@category.Id" class="btn btn-danger" onclick="return confirm('Do you want delete this item?')">Delete</a>
+            </td>
+        </tr>
+        i++;
+    }
+</table>
