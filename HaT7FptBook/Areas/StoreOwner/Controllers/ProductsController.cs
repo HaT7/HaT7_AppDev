@@ -82,13 +82,12 @@ namespace HaT7FptBook.Areas.StoreOwner.Controllers
         [Authorize(Roles = SD.Role_StoreOwner)]
         public IActionResult UpSert(ProductUpSertVM productUpSertVm)
         {
-            
             if (!ModelState.IsValid)
             {
                 productUpSertVm.CategoryList = CategorySelectListItems();
                 return View(productUpSertVm);
             }
-                
+
             string webRootPath = _environment.WebRootPath;
             var files = HttpContext.Request.Form.Files;
             if (files.Count > 0)
@@ -97,10 +96,9 @@ namespace HaT7FptBook.Areas.StoreOwner.Controllers
                 var uploads = Path.Combine(webRootPath, @"images/products");
                 var extension = Path.GetExtension(files[0].FileName);
                 var productDb = _db.Products.AsNoTracking().Where(a => a.Id == productUpSertVm.Product.Id).First();
-                if (productDb.ImageUrl!= null && productUpSertVm.Product.Id != 0)
+                if (productDb.ImageUrl != null && productUpSertVm.Product.Id != 0)
                 {
                     // to edit path so we need to delete the old path and update new one
-                    
                     var imagePath = Path.Combine(webRootPath, productDb.ImageUrl.TrimStart('/'));
                     if (System.IO.File.Exists(imagePath))
                     {
@@ -108,8 +106,7 @@ namespace HaT7FptBook.Areas.StoreOwner.Controllers
                     }
                 }
 
-                using (var filesStreams =
-                       new FileStream(Path.Combine(uploads, fileName + extension), FileMode.Create))
+                using (var filesStreams = new FileStream(Path.Combine(uploads, fileName + extension), FileMode.Create))
                 {
                     files[0].CopyTo(filesStreams);
                 }
@@ -125,7 +122,7 @@ namespace HaT7FptBook.Areas.StoreOwner.Controllers
                     productUpSertVm.Product.ImageUrl = objFromDb.ImageUrl;
                 }
             }
-            
+
             if (productUpSertVm.Product.Id == 0 || productUpSertVm.Product.Id == null)
             {
                 _db.Products.Add(productUpSertVm.Product);
@@ -137,6 +134,6 @@ namespace HaT7FptBook.Areas.StoreOwner.Controllers
 
             _db.SaveChanges();
             return RedirectToAction(nameof(Index));
-        } 
+        }
     }
 }

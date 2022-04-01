@@ -10,6 +10,7 @@ using Microsoft.AspNetCore.HttpsPolicy;
 using Microsoft.EntityFrameworkCore;
 using HaT7FptBook.Data;
 using HaT7FptBook.Initializer;
+using HaT7FptBook.Utility;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
@@ -38,6 +39,12 @@ namespace HaT7FptBook
                 .AddEntityFrameworkStores<ApplicationDbContext>();
             services.AddControllersWithViews();
             services.AddScoped<IDbInitializer, DbInitializer>();
+            
+            services.AddOptions();
+            var mailsettings = Configuration.GetSection("MailSettings");
+            services.Configure<MailSettings>(mailsettings);
+
+            services.AddTransient<ISendMailService, SendMailService>();
             
             services.ConfigureApplicationCookie(options =>
             {
