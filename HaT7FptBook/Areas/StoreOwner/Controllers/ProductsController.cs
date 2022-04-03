@@ -95,17 +95,20 @@ namespace HaT7FptBook.Areas.StoreOwner.Controllers
                 string fileName = Guid.NewGuid().ToString();
                 var uploads = Path.Combine(webRootPath, @"images/products");
                 var extension = Path.GetExtension(files[0].FileName);
-                var productDb = _db.Products.AsNoTracking().Where(a => a.Id == productUpSertVm.Product.Id).First();
-                if (productDb.ImageUrl != null && productUpSertVm.Product.Id != 0)
+                if (productUpSertVm.Product.Id != 0)
                 {
-                    // to edit path so we need to delete the old path and update new one
-                    var imagePath = Path.Combine(webRootPath, productDb.ImageUrl.TrimStart('/'));
-                    if (System.IO.File.Exists(imagePath))
+                    var productDb = _db.Products.AsNoTracking().Where(a => a.Id == productUpSertVm.Product.Id).First();
+                    if (productDb.ImageUrl != null && productUpSertVm.Product.Id != 0)
                     {
-                        System.IO.File.Delete(imagePath);
+                        // to edit path so we need to delete the old path and update new one
+                        var imagePath = Path.Combine(webRootPath, productDb.ImageUrl.TrimStart('/'));
+                        if (System.IO.File.Exists(imagePath))
+                        {
+                            System.IO.File.Delete(imagePath);
+                        }
                     }
                 }
-
+                
                 using (var filesStreams = new FileStream(Path.Combine(uploads, fileName + extension), FileMode.Create))
                 {
                     files[0].CopyTo(filesStreams);
@@ -118,7 +121,7 @@ namespace HaT7FptBook.Areas.StoreOwner.Controllers
                 //update without change the images
                 if (productUpSertVm.Product.Id != 0)
                 {
-                    Product objFromDb = _db.Products.Find(productUpSertVm.Product.Id);
+                    Product objFromDb = _db.Products.AsNoTracking().Where(a => a.Id == productUpSertVm.Product.Id).First();
                     productUpSertVm.Product.ImageUrl = objFromDb.ImageUrl;
                 }
             }

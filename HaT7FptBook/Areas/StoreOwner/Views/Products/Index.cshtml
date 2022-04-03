@@ -8,9 +8,14 @@
 <h2>List Product</h2>
 <a asp-controller="Products" asp-action="UpSert" class="btn btn-primary">Create new product</a>
 
+<form class="form-inline my-2 my-lg-0 float-right">
+    <input id="myInput" class="form-control mr-sm-2" type="text" placeholder="Search">
+</form>
+
 <table style="width: 100%">
+    <thead>
     <tr>
-        <th>Id</th>
+        <th>No. </th>
         <th>Name</th>
         <th>Description</th>
         <th>Author</th>
@@ -19,19 +24,21 @@
         <th>Category Name</th>
         <th>Action</th>
     </tr>
+    </thead>
 
+    <tbody id="tblData">
     @{ var i = 1; }
     @foreach (var product in @Model)
     {
         <tr>
-            <td>@product.Id</td>
+            <td>@i</td>
             <td>@product.Title</td>
             <td>@product.Description</td>
             <td>@product.Author</td>
             <td>@product.NoPage</td>
             <td>@product.Price</td>
             <td>@product.Category.Name</td>
-
+    
             <td>
                 <a asp-controller="Products" asp-action="UpSert" asp-route-id="@product.Id" class="btn btn-info">Edit</a>
                 <a asp-controller="Products" asp-action="Delete" asp-route-id="@product.Id" class="btn btn-danger" onclick="return confirm('Do you want delete this item?')">Delete</a>
@@ -39,4 +46,19 @@
         </tr>
         i++;
     }
+    </tbody>
 </table>
+
+@section Scripts
+{
+    <script>
+    $(document).ready(function(){
+            $("#myInput").on("keyup", function() {
+                var value = $(this).val().toLowerCase();
+                $("#tblData tr").filter(function() {
+                    $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1)
+                });
+            });
+        });
+    </script>
+}

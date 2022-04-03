@@ -8,15 +8,23 @@
 <h2>List User</h2>
 <a href="/Identity/Account/Register" class="btn btn-primary">Create new User</a>
 
+<form class="form-inline my-2 my-lg-0 float-right">
+    <input id="myInput" class="form-control mr-sm-2" type="text" placeholder="Search">
+</form>
+
 <table style="width: 100%">
+    <thead>
     <tr>
-        <th>No</th>
+        <th>No. </th>
         <th>Name</th>
         <th>Email</th>
         <th>Address</th>
         <th>Role</th>
         <th>Action</th>
     </tr>
+    </thead>
+
+    <tbody id="tblData">
     @{ var i = 1; }
     @foreach (var user in @Model)
     {
@@ -43,4 +51,19 @@
         </tr>
         i++;
     }
+    </tbody>
 </table>
+
+@section Scripts
+{
+    <script>
+    $(document).ready(function(){
+            $("#myInput").on("keyup", function() {
+                var value = $(this).val().toLowerCase();
+                $("#tblData tr").filter(function() {
+                    $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1)
+                });
+            });
+        });
+    </script>
+}

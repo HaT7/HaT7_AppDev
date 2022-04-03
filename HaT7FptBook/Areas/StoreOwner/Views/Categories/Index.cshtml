@@ -8,19 +8,26 @@
 <h2>List Category</h2>
 <a asp-controller="Categories" asp-action="UpSert" class="btn btn-primary">Create new Category</a>
 
+<form class="form-inline my-2 my-lg-0 float-right">
+    <input id="myInput" class="form-control mr-sm-2" type="text" placeholder="Search">
+</form>
+
 <table style="width: 100%">
+    <thead>
     <tr>
-        <th>Category Id</th>
+        <th>No. </th>
         <th>Name</th>
         <th>Description</th>
         <th>Action</th>
     </tr>
+    </thead>
 
+    <tbody id="tblData">
     @{ var i = 1; }
     @foreach (var category in @Model)
     {
         <tr>
-            <td>@category.Id</td>
+            <td>@i</td>
             <td>@category.Name</td>
             <td>@category.Description</td>
             <td>
@@ -30,4 +37,19 @@
         </tr>
         i++;
     }
+    </tbody>
 </table>
+
+@section Scripts
+{
+    <script>
+    $(document).ready(function(){
+            $("#myInput").on("keyup", function() {
+                var value = $(this).val().toLowerCase();
+                $("#tblData tr").filter(function() {
+                    $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1)
+                });
+            });
+        });
+    </script>
+}

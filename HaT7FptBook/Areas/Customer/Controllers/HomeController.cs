@@ -3,10 +3,12 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
+using HaT7FptBook.Data;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using HaT7FptBook.Models;
 using HaT7FptBook.Utility;
+using Microsoft.EntityFrameworkCore;
 
 namespace HaT7FptBook.Areas.Customer.Controllers
 {
@@ -14,15 +16,29 @@ namespace HaT7FptBook.Areas.Customer.Controllers
     public class HomeController : Controller
     {
         private readonly ILogger<HomeController> _logger;
+        private readonly ApplicationDbContext _db;
 
-        public HomeController(ILogger<HomeController> logger)
+        public HomeController(ILogger<HomeController> logger, ApplicationDbContext db)
         {
             _logger = logger;
+            _db = db;
         }
 
         public IActionResult Index()
         {
-            return View();
+            var products = _db.Products.Include(a => a.Category).ToList();
+            return View(products);
+        }
+
+        public IActionResult Details(int id)
+        {
+            var productFromDb = _db.Products.Include(a=>a.Category).FirstOrDefault(a => a.Id == id);
+            Cart cart = new Cart()
+            {
+                Product = productFromDb,
+                ProductId = productFromDb.Id
+            };
+            return View(cart);
         }
 
         public IActionResult Privacy()

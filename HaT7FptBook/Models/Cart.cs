@@ -13,14 +13,13 @@ namespace HaT7FptBook.Models
         
         [Required] public int ProductId { get; set; }
         [ForeignKey("ProductId")] public Product Product { get; set; }
-        
         [Required] public int Count { get; set; }
-
         public DateTime CreateAt { get; set; }
-
+        [NotMapped] public double Price { get; set; }
         public Cart()
         {
             CreateAt = DateTime.Now;
+            Count = 1;
         }
     }
 }
