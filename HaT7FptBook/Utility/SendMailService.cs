@@ -10,9 +10,7 @@ namespace HaT7FptBook.Utility
     public class SendMailService : ISendMailService
     {
         private readonly MailSettings mailSettings;
-
         private readonly ILogger<SendMailService> logger;
-
 
         // mailSetting được Inject qua dịch vụ hệ thống
         // Có inject Logger để xuất log
@@ -26,6 +24,10 @@ namespace HaT7FptBook.Utility
         // Gửi email, theo nội dung trong mailContent
         public async Task SendMail(MailContent mailContent)
         {
+            // Đầu tiên khởi tạo một cái email (object email)
+            // Sender là lấy cái email nào để gởi, From là gởi từ đâu. 2 cái này là một vì cũng lấy chung một cái mail
+            // để gởi và gởi cùng từ một hệ thống. To là gởi đến đâu.
+            // BodyBuilder là một lớp trợ giúp để xây dựng các cấu trúc body MIME phổ biến.
             var email = new MimeMessage();
             email.Sender = new MailboxAddress(mailSettings.DisplayName, mailSettings.Mail);
             email.From.Add(new MailboxAddress(mailSettings.DisplayName, mailSettings.Mail));
@@ -36,11 +38,15 @@ namespace HaT7FptBook.Utility
             builder.HtmlBody = mailContent.Body;
             email.Body = builder.ToMessageBody();
 
-            // dùng SmtpClient của MailKit
+            // dùng SmtpClient của MailKit, đây là một cái hàm dùng để gửi mail
             using var smtp = new MailKit.Net.Smtp.SmtpClient();
 
             try
             {
+                // Đầu tiên là kết nối tới sever mail của mình
+                // SecureSocketOptions.StartTls hiểu nôm na là bảo mật kết nối giữa port máy mình vs port máy chủ bên
+                // google có một tiêu chuẩn là Tls, mình chỉ setup cho nó thôi.
+                // Authenticate dùng để login vào cái mail mình dùng để gửi 
                 smtp.Connect(mailSettings.Host, mailSettings.Port, SecureSocketOptions.StartTls);
                 smtp.Authenticate(mailSettings.Mail, mailSettings.Password);
                 await smtp.SendAsync(email);

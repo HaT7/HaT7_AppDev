@@ -9,5 +9,8 @@
         public const string Area_Admin = "Admin";
         public const string Area_StoreOwner = "StoreOwner";
         public const string Area_Customer = "Customer";
+        
+        public const string ssShoppingCart = "Shopping Cart Session";
+
     }
 }
