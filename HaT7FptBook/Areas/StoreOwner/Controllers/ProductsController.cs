@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Threading.Tasks;
 using HaT7FptBook.Data;
 using HaT7FptBook.Models;
 using HaT7FptBook.Utility;
@@ -20,6 +21,7 @@ namespace HaT7FptBook.Areas.StoreOwner.Controllers
     {
         private readonly ApplicationDbContext _db;
         private readonly IWebHostEnvironment _environment;
+        private readonly int _recordsPerPage = 3;
 
         public ProductsController(ApplicationDbContext db, IWebHostEnvironment environment)
         {
@@ -30,13 +32,22 @@ namespace HaT7FptBook.Areas.StoreOwner.Controllers
         //====================== INDEX ==========================   
         [HttpGet]
         [Authorize(Roles = SD.Role_StoreOwner)]
-        public IActionResult Index()
+        public async Task<IActionResult> Index(int id = 0, string searchString = "")
         {
-            var productList = _db.Products.Include(a => a.Category)
-                .OrderBy(a => a.CreateAt).ToList();
+            var products = _db.Products
+                .Where(s => s.Title.Contains(searchString) || s.Category.Name.Contains(searchString))
+                .Include(a => a.Category)
+                .OrderBy(a => a.CreateAt)
+                .ToList();
+            int numberOfRecords = products.Count();
+            int numberOfPages = (int) Math.Ceiling((double) numberOfRecords / _recordsPerPage);
+            ViewBag.numberOfPages = numberOfPages;
+            ViewBag.currentPage = id;
+            ViewData["CurrentFilter"] = searchString;
+            var productList = products.Skip(id * _recordsPerPage).Take(_recordsPerPage).ToList();
+
             return View(productList);
         }
-
         //====================== DELETE ==========================
         [HttpGet]
         [Authorize(Roles = SD.Role_StoreOwner)]
@@ -137,6 +148,16 @@ namespace HaT7FptBook.Areas.StoreOwner.Controllers
 
             _db.SaveChanges();
             return RedirectToAction(nameof(Index));
+        }
+        
+        // ================= DETAIL ===================
+        [HttpGet]
+        public IActionResult Details(int id)
+        {
+            var productFromDb = _db.Products
+                .Include(a=>a.Category)
+                .FirstOrDefault(a => a.Id == id);
+            return View(productFromDb);
         }
     }
 }

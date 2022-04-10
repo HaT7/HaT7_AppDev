@@ -1,5 +1,18 @@
 ﻿@model IEnumerable<HaT7FptBook.Models.Product>
 
+<form asp-action="Index" method="get">
+    <div class="d-flex flex-row mb-3">
+        @* value="@ViewData["CurrentFilter"] để giữ lại dữ liệu đang search trên ô input *@
+        <input
+            oninvalid="InvalidMsg(this);" oninput="InvalidMsg(this);"
+            type="text" name="SearchString" value="@ViewData["CurrentFilter"]"
+            required pattern="\S+.*" placeholder="Find By Name or Category"
+            class="w-50 mr-1"/>
+        <button type="submit" value="Search" class="btn btn-primary mr-1">Search</button>
+        <a asp-action="Index" class="btn btn-info mr-1">Back to List</a>
+    </div>
+</form>
+
 <div class="row pb-3 backgroundWhite">
     @foreach (var product in Model)
     {
@@ -9,7 +22,9 @@
                     <div class="card" style="border:0px;">
                         <img src="@product.ImageUrl" class="card-img-top rounded"/>
                         <div class="pl-1">
-                            <p class="card-title h5"><b style="color:#2c3e50">@product.Title</b></p>
+                            <p class="card-title h5">
+                                <b style="color:#2c3e50">@product.Title</b>
+                            </p>
                             <p class="card-title text-primary">by <b>@product.Author</b></p>
                         </div>
                         <div style="padding-left:5px;">
@@ -27,3 +42,32 @@
         </div>
     }
 </div>
+
+<div style="display:flex;text-align:center;justify-content:center">
+    <nav aria-label="Page navigation example">
+        <ul class="pagination">
+            @for (var i = 0; i < @ViewBag.numberOfPages; i++)
+            {
+                var style = (ViewBag.currentPage == @i) ? "active" : "";
+                <li class="page-item @style">
+                    <a class="page-link" asp-route-id="@i" asp-route-searchString="@ViewData["CurrentFilter"]">@(i + 1)</a>
+                </li>
+            }
+        </ul>
+    </nav>
+</div>
+
+<script>
+        function InvalidMsg(textbox) {
+
+            if (textbox.value === '') {
+                textbox.setCustomValidity
+                      ('Type something in here to search');
+            }
+            else {
+                textbox.setCustomValidity('');
+            }
+
+            return true;
+        }
+</script>

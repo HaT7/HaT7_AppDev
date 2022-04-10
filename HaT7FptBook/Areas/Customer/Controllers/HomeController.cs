@@ -20,6 +20,7 @@ namespace HaT7FptBook.Areas.Customer.Controllers
     {
         private readonly ILogger<HomeController> _logger;
         private readonly ApplicationDbContext _db;
+        private readonly int _recordsPerPage = 2;
 
         public HomeController(ILogger<HomeController> logger, ApplicationDbContext db)
         {
@@ -27,16 +28,29 @@ namespace HaT7FptBook.Areas.Customer.Controllers
             _db = db;
         }
 
-        public IActionResult Index()
+        public async Task<IActionResult> Index(int id = 0, string searchString = "")
         {
-            var products = _db.Products.Include(a => a.Category).ToList();
-            return View(products);
+            var products = _db.Products
+                .Where(s => s.Title.Contains(searchString) || s.Category.Name.Contains(searchString))
+                .Include(a => a.Category)
+                .ToList();
+            int numberOfRecords = products.Count();
+            int numberOfPages = (int) Math.Ceiling((double) numberOfRecords / _recordsPerPage);
+            ViewBag.numberOfPages = numberOfPages;
+            ViewBag.currentPage = id;
+            ViewData["CurrentFilter"] = searchString;
+            var productList = products.Skip(id * _recordsPerPage).Take(_recordsPerPage).ToList();
+
+            return View(productList);
         }
 
         [HttpGet]
         public IActionResult Details(int id)
         {
-            var productFromDb = _db.Products.Include(a=>a.Category).FirstOrDefault(a => a.Id == id);
+            // Thực chất là hiện ra một cái cart dưới dạng product detail (có hiện ra cái count của cart nữa)
+            var productFromDb = _db.Products
+                .Include(a => a.Category)
+                .FirstOrDefault(a => a.Id == id);
             Cart cart = new Cart()
             {
                 Product = productFromDb,
@@ -44,26 +58,28 @@ namespace HaT7FptBook.Areas.Customer.Controllers
             };
             return View(cart);
         }
-        
+
         [HttpPost]
         [AutoValidateAntiforgeryToken]
         [Authorize]
         public IActionResult Details(Cart CartObject)
         {
+            // Ở trên phần HttpGet chỉ hiện ra một cái cart dưới dạng product detail và chỉ có thêm một object là Count
+            // mà trong cart chúng ta còn rất nhiều object nữa nên ở đây chúng ta xét CartObject.Id = 0 để nó mặc định
+            // với trường hợp là tạo mới một cái cart.
             CartObject.Id = 0;
             if (ModelState.IsValid)
             {
-                //then we will add to cart
-                var claimsIdentity = (ClaimsIdentity)User.Identity;
+                // Đầu tiên chúng ta lấy Id mà user đang đăng nhập
+                var claimsIdentity = (ClaimsIdentity) User.Identity;
                 var claim = claimsIdentity.FindFirst(ClaimTypes.NameIdentifier);
                 CartObject.UserId = claim.Value;
 
-                Cart cartFromDb = _db.Carts.FirstOrDefault(
-                    u => u.UserId == CartObject.UserId && u.ProductId == CartObject.ProductId);
+                Cart cartFromDb = _db.Carts
+                    .FirstOrDefault(u => u.UserId == CartObject.UserId && u.ProductId == CartObject.ProductId);
 
                 if (cartFromDb == null)
                 {
-                    //no records exists in database for that product for that user
                     _db.Carts.Add(CartObject);
                 }
                 else
@@ -71,24 +87,29 @@ namespace HaT7FptBook.Areas.Customer.Controllers
                     cartFromDb.Count += CartObject.Count;
                     _db.Carts.Update(cartFromDb);
                 }
+
                 _db.SaveChanges();
-                
+
+                // Ở đây dữ liệu count sẽ được lưu trong một cái session, cụ thể là ssShoppingCart (vào file SD xem cụ
+                // thể là Shopping Cart Session)
                 var count = _db.Carts
                     .Where(c => c.UserId == CartObject.UserId)
                     .ToList().Count();
                 HttpContext.Session.SetInt32(SD.ssShoppingCart, count);
-                
+
                 return RedirectToAction(nameof(Index));
             }
             else
             {
-                var productFromDb = _db.Products.FirstOrDefault(u => u.Id == CartObject.ProductId);
-                Cart shoppingCart = new Cart()
+                var productFromDb = _db.Products
+                    .Include(a => a.Category)
+                    .FirstOrDefault(u => u.Id == CartObject.ProductId);
+                Cart cart = new Cart()
                 {
                     Product = productFromDb,
                     ProductId = productFromDb.Id
                 };
-                return View(shoppingCart); 
+                return View(cart);
             }
         }
 
