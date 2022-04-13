@@ -48,6 +48,7 @@ namespace HaT7FptBook.Areas.StoreOwner.Controllers
 
             return View(productList);
         }
+
         //====================== DELETE ==========================
         [HttpGet]
         [Authorize(Roles = SD.Role_StoreOwner)]
@@ -99,6 +100,12 @@ namespace HaT7FptBook.Areas.StoreOwner.Controllers
                 return View(productUpSertVm);
             }
 
+            // IWebHostEnvironment Cung cấp thông tin về môi trường lưu trữ web mà ứng dụng đang chạy trong đó.
+            // IWebHostEnvironment cũng sẽ kiểm tra được là mình đang ở chế độ development hay production
+            
+            // WebRootPath - Đường dẫn của thư mục www
+            // WebRootPath − Path of the www folder(Gets or sets the absolute path to the directory that contains the
+            // web-servable application content files)
             string webRootPath = _environment.WebRootPath;
             var files = HttpContext.Request.Form.Files;
             if (files.Count > 0)
@@ -119,7 +126,16 @@ namespace HaT7FptBook.Areas.StoreOwner.Controllers
                         }
                     }
                 }
-                
+
+                // Lớp FileStream tạo ra các objects để đọc và ghi dữ liệu ra file. Do stream là tài nguyên không
+                // quản lý bởi GC, nên cần đưa nó vào cấu trúc using để tự động gọi giải phóng tài nguyên (Dispose)
+                // khi hết khối lệnh.
+
+                // Một luồng (stream) là một object được sử dụng để truyền dữ liệu. Khi dữ liệu truyền từ các nguồn
+                // bên ngoài vào ứng dụng ta gọi đó là đọc stream, và khi dữ liệu truyền từ chương trình ra nguồn bên
+                // ngoài ta gọi nó là ghi stream.
+
+                // FileMode.Create để tạo mới một file để lưu, nếu file đó đã tồn tại thì nó sẽ ghi đè lên
                 using (var filesStreams = new FileStream(Path.Combine(uploads, fileName + extension), FileMode.Create))
                 {
                     files[0].CopyTo(filesStreams);
@@ -149,13 +165,13 @@ namespace HaT7FptBook.Areas.StoreOwner.Controllers
             _db.SaveChanges();
             return RedirectToAction(nameof(Index));
         }
-        
+
         // ================= DETAIL ===================
         [HttpGet]
         public IActionResult Details(int id)
         {
             var productFromDb = _db.Products
-                .Include(a=>a.Category)
+                .Include(a => a.Category)
                 .FirstOrDefault(a => a.Id == id);
             return View(productFromDb);
         }

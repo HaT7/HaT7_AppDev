@@ -26,11 +26,11 @@ namespace HaT7FptBook.Areas.Customer.Controllers
     public class CartsController : Controller
     {
         private readonly ApplicationDbContext _db;
-        [BindProperty] public ShoppingCartVM ShoppingCartVM { get; set; }
         public CartsController(ApplicationDbContext db)
         {
             _db = db;
         }
+        [BindProperty] public ShoppingCartVM ShoppingCartVM { get; set; }
         public IActionResult Index()
         {
             var claimsIdentity = (ClaimsIdentity) User.Identity;
@@ -125,6 +125,9 @@ namespace HaT7FptBook.Areas.Customer.Controllers
             return View(ShoppingCartVM);
         }
 
+        // Hai cái function summary này đều ko nhận giá trị trả về nên nó đã vi phạm tính overload trong OOP (hai cái có
+        // thể trùng tên nhưng phải khác giá trị truyền vào), nên chúng ta đặt một cái tên khác (SummaryPost) và để khi
+        // post về nhận giá trị của function summary này thì chúng ta đặt một cái ActionName.
         [HttpPost]
         [ActionName("Summary")]
         [ValidateAntiForgeryToken]
@@ -140,6 +143,7 @@ namespace HaT7FptBook.Areas.Customer.Controllers
             ShoppingCartVM.OrderHeader.Address = ShoppingCartVM.OrderHeader.ApplicationUser.Address;
             ShoppingCartVM.OrderHeader.OderDate = DateTime.Now;
 
+            // Chỗ này chúng ta tiến hành thêm vào và lưu OrderHeaders để xún dưới tạo OrderDetail sẽ có Id của OrderHeader 
             _db.OrderHeaders.Add(ShoppingCartVM.OrderHeader);
             _db.SaveChanges();
 

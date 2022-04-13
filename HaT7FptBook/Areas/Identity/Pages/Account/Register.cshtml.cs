@@ -66,14 +66,16 @@ namespace HaT7FptBook.Areas.Identity.Pages.Account
             [Display(Name = "Confirm password")]
             [Compare("Password", ErrorMessage = "The password and confirmation password do not match.")]
             public string ConfirmPassword { get; set; }
-
             [Required] public string FullName { get; set; }
             [Required] public string Address { get; set; }
+            [Required] public string Role { get; set; }
+            public IEnumerable<SelectListItem> RoleList { get; set; }
         }
 
         public async Task OnGetAsync(string returnUrl = null)
         {
             ReturnUrl = returnUrl;
+            GetRole();
             ExternalLogins = (await _signInManager.GetExternalAuthenticationSchemesAsync()).ToList();
         }
 
@@ -112,8 +114,8 @@ namespace HaT7FptBook.Areas.Identity.Pages.Account
 
                     if (_userManager.Options.SignIn.RequireConfirmedAccount)
                     {
-                        //return RedirectToPage("RegisterConfirmation", new {email = Input.Email, returnUrl = returnUrl});
-                        return RedirectToAction("Index", "Users", new { area = "Admin" });
+                        return RedirectToPage("RegisterConfirmation", new {email = Input.Email, returnUrl = returnUrl});
+                        // return RedirectToAction("Index", "Users", new { area = "Admin" });
                     }
                     else
                     {
@@ -128,8 +130,24 @@ namespace HaT7FptBook.Areas.Identity.Pages.Account
                 }
             }
 
+            GetRole();
             // If we got this far, something failed, redisplay form
             return Page();
+        }
+        
+        //Tạo ra một cái metheod là GetRole để khi xảy ra lỗi sẽ lấy lại các dữ liệu để hiển thị ra lại
+        private void GetRole()
+        {
+            Input = new InputModel()
+            {
+                //Mình sẽ lấy hết cái role ra, trong đó mình chọn thằng role name, mỗi thằng role name sẽ tạo
+                //ra một cái SelectListItem
+                RoleList = _roleManager.Roles.Select(a => a.Name).Select(a => new SelectListItem
+                {
+                    Text = a,
+                    Value = a
+                })
+            };
         }
     }
 }

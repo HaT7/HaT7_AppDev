@@ -54,7 +54,7 @@ namespace HaT7FptBook
             });
             services.AddSession(options =>
             {
-                options.IdleTimeout = TimeSpan.FromMinutes(30);
+                options.IdleTimeout = TimeSpan.FromMinutes(30); // Thòi gian cookie hiệu lực
                 options.Cookie.HttpOnly = true;
                 options.Cookie.IsEssential = true;
             });

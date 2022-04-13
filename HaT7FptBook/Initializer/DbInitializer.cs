@@ -35,25 +35,23 @@ namespace HaT7FptBook.Initializer
                 // ignored
             }
             
-            if (_db.Roles.Any(r => r.Name == "Admin")) return;
             if (_db.Roles.Any(r => r.Name == "StoreOwner")) return;
             if (_db.Roles.Any(r => r.Name == "Customer")) return;
             
-            _roleManager.CreateAsync(new IdentityRole("Admin")).GetAwaiter().GetResult();
             _roleManager.CreateAsync(new IdentityRole("StoreOwner")).GetAwaiter().GetResult();
             _roleManager.CreateAsync(new IdentityRole("Customer")).GetAwaiter().GetResult();
 
-            _userManager.CreateAsync(new ApplicationUser()
-            {
-                UserName = "admin@gmail.com",
-                Email = "admin@gmail.com",
-                EmailConfirmed = true, 
-                FullName = "Admin",
-                Address = "Đà Nẵng"
-            }, "Admin123@").GetAwaiter().GetResult();
-
-            ApplicationUser admin = _db.ApplicationUsers.Where(u => u.Email == "admin@gmail.com").FirstOrDefault();
-            _userManager.AddToRoleAsync(admin, "Admin").GetAwaiter().GetResult();
+            // _userManager.CreateAsync(new ApplicationUser()
+            // {
+            //     UserName = "admin@gmail.com",
+            //     Email = "admin@gmail.com",
+            //     EmailConfirmed = true, 
+            //     FullName = "Admin",
+            //     Address = "Đà Nẵng"
+            // }, "Admin123@").GetAwaiter().GetResult();
+            //
+            // ApplicationUser admin = _db.ApplicationUsers.Where(u => u.Email == "admin@gmail.com").FirstOrDefault();
+            // _userManager.AddToRoleAsync(admin, "Admin").GetAwaiter().GetResult();
         }
     }
 }
