@@ -20,5 +20,7 @@ namespace HaT7FptBook.Data
         public DbSet<OderDetail> OderDetails { get; set; }
         public DbSet<OrderHeader> OrderHeaders { get; set; }
         public DbSet<Product> Products { get; set; }
+        public DbSet<Store> Stores { get; set; }
+
     }
 }

@@ -10,11 +10,11 @@ namespace HaT7FptBook.Areas.StoreOwner.Controllers
 {
     [Area(SD.Area_StoreOwner)]
     [Authorize(Roles = SD.Role_StoreOwner)]
-    public class CategoriesController : Controller
+    public class StoresController : Controller
     {
         private readonly ApplicationDbContext _db;
 
-        public CategoriesController(ApplicationDbContext db)
+        public StoresController(ApplicationDbContext db)
         {
             _db = db;
         }
@@ -26,11 +26,9 @@ namespace HaT7FptBook.Areas.StoreOwner.Controllers
         {
             var claimIdentity = (ClaimsIdentity) User.Identity;
             var claims = claimIdentity.FindFirst(ClaimTypes.NameIdentifier);
-
-            var storeId = _db.Stores.FirstOrDefault(a => a.StoreOwnerId == claims.Value);
             
-            var categoryList = _db.Categories.Where(a=>a.StoreId == storeId.Id).ToList();
-            return View(categoryList);
+            var storeList = _db.Stores.Where(a=>a.StoreOwnerId == claims.Value).ToList();
+            return View(storeList);
         }
 
         //======================== DELETE ==========================
@@ -38,8 +36,8 @@ namespace HaT7FptBook.Areas.StoreOwner.Controllers
         [Authorize(Roles = SD.Role_StoreOwner)]
         public IActionResult Delete(int id)
         {
-            var category = _db.Categories.Find(id);
-            _db.Categories.Remove(category);
+            var store = _db.Stores.Find(id);
+            _db.Stores.Remove(store);
             _db.SaveChanges();
             return RedirectToAction(nameof(Index));
         }
@@ -51,35 +49,33 @@ namespace HaT7FptBook.Areas.StoreOwner.Controllers
         {
             if (id == 0 || id == null)
             {
-                return View(new Category());
+                return View(new Store());
             }
 
-            var category = _db.Categories.Find(id);
-            return View(category);
+            var store = _db.Stores.Find(id);
+            return View(store);
         }
 
         [HttpPost]
         [Authorize(Roles = SD.Role_StoreOwner)]
-        public IActionResult UpSert([Bind("Id, Name, Description")]Category category)
+        public IActionResult UpSert([Bind("Id,Name")]Store store)
         {
             var claimIdentity = (ClaimsIdentity) User.Identity;
             var claims = claimIdentity.FindFirst(ClaimTypes.NameIdentifier);
+            store.StoreOwnerId = claims.Value;
 
-            var storeId = _db.Stores.FirstOrDefault(a => a.StoreOwnerId == claims.Value);
-            category.StoreId = storeId.Id;
-            
-            // if (!ModelState.IsValid)
-            // {
-            //     return View(category);
-            // }
-
-            if (category.Id == 0 || category.Id == null)
+            if (store.Id == 0 || store.Id == null)
             {
-                _db.Categories.Add(category);
+                var checkStoreExist = _db.Stores.Any(a=> a.StoreOwnerId == claims.Value);
+                if (checkStoreExist)
+                {
+                    return BadRequest();
+                }
+                _db.Stores.Add(store);
             }
             else
             {
-                _db.Categories.Update(category);
+                _db.Stores.Update(store);
             }
 
             _db.SaveChanges();

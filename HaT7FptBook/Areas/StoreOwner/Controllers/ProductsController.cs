@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Security.Claims;
 using System.Threading.Tasks;
 using HaT7FptBook.Data;
 using HaT7FptBook.Models;
@@ -34,6 +35,10 @@ namespace HaT7FptBook.Areas.StoreOwner.Controllers
         [Authorize(Roles = SD.Role_StoreOwner)]
         public async Task<IActionResult> Index(int id = 0, string searchString = "")
         {
+            var claimIdentity = (ClaimsIdentity) User.Identity;
+            var claims = claimIdentity.FindFirst(ClaimTypes.NameIdentifier);
+            var storeId = _db.Stores.FirstOrDefault(a => a.StoreOwnerId == claims.Value);
+            
             var products = _db.Products
                 .Where(s => s.Title.Contains(searchString) || s.Category.Name.Contains(searchString))
                 .Include(a => a.Category)
@@ -44,7 +49,11 @@ namespace HaT7FptBook.Areas.StoreOwner.Controllers
             ViewBag.numberOfPages = numberOfPages;
             ViewBag.currentPage = id;
             ViewData["CurrentFilter"] = searchString;
-            var productList = products.Skip(id * _recordsPerPage).Take(_recordsPerPage).ToList();
+            var productList = products
+                .Skip(id * _recordsPerPage)
+                .Take(_recordsPerPage)
+                .Where(a=>a.StoreId == storeId.Id)
+                .ToList();
 
             return View(productList);
         }
@@ -64,7 +73,12 @@ namespace HaT7FptBook.Areas.StoreOwner.Controllers
         [NonAction]
         private IEnumerable<SelectListItem> CategorySelectListItems()
         {
-            var categoryList = _db.Categories.ToList();
+            var claimIdentity = (ClaimsIdentity) User.Identity;
+            var claims = claimIdentity.FindFirst(ClaimTypes.NameIdentifier);
+
+            var storeId = _db.Stores.FirstOrDefault(a => a.StoreOwnerId == claims.Value);
+            
+            var categoryList = _db.Categories.Where(a => a.StoreId == storeId.Id).ToList();
             var result = categoryList.Select(category => new SelectListItem
             {
                 Text = category.Name,
@@ -94,11 +108,17 @@ namespace HaT7FptBook.Areas.StoreOwner.Controllers
         [Authorize(Roles = SD.Role_StoreOwner)]
         public IActionResult UpSert(ProductUpSertVM productUpSertVm)
         {
-            if (!ModelState.IsValid)
-            {
-                productUpSertVm.CategoryList = CategorySelectListItems();
-                return View(productUpSertVm);
-            }
+            var claimIdentity = (ClaimsIdentity) User.Identity;
+            var claims = claimIdentity.FindFirst(ClaimTypes.NameIdentifier);
+
+            var storeId = _db.Stores.FirstOrDefault(a => a.StoreOwnerId == claims.Value);
+            productUpSertVm.Product.StoreId = storeId.Id;
+            
+            // if (!ModelState.IsValid)
+            // {
+            //     productUpSertVm.CategoryList = CategorySelectListItems();
+            //     return View(productUpSertVm);
+            // }
 
             // IWebHostEnvironment Cung cấp thông tin về môi trường lưu trữ web mà ứng dụng đang chạy trong đó.
             // IWebHostEnvironment cũng sẽ kiểm tra được là mình đang ở chế độ development hay production
