@@ -36,6 +36,7 @@ namespace HaT7FptBook.Areas.Customer.Controllers
                 .ToList();
             int numberOfRecords = products.Count();
             int numberOfPages = (int) Math.Ceiling((double) numberOfRecords / _recordsPerPage);
+            
             ViewBag.numberOfPages = numberOfPages;
             ViewBag.currentPage = id;
             ViewData["CurrentFilter"] = searchString;

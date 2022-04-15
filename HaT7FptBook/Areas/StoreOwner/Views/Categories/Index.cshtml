@@ -6,54 +6,61 @@
 }
 
 <h2>List Category</h2>
-
-<form asp-action="Index" method="get">
-    <div class="d-flex flex-row justify-content-between mt-3 mb-1">
-        <div>
-            <a asp-controller="Categories" asp-action="UpSert" class="btn btn-primary">Create new Category</a>
+<partial name="_StatusMessenger" model="@ViewData["Message"]"/>
+@if (Model.Any())
+{
+    <form asp-action="Index" method="get">
+        <div class="d-flex flex-row justify-content-between mt-3 mb-1">
+            <div>
+                <a asp-controller="Categories" asp-action="UpSert" class="btn btn-primary">Create new Category</a>
+            </div>
+    
+            <div class="d-flex">
+                <input
+                    oninvalid="InvalidMsg(this);" oninput="InvalidMsg(this);"
+                    type="text" name="SearchString" value="@ViewData["CurrentFilter"]"
+                    required pattern="\S+.*" placeholder=""
+                    class="w-49 mr-1"/>
+                <button type="submit" value="Search" class="btn btn-primary mr-1">Search</button>
+                <a asp-action="Index" class="btn btn-info mr-1">Back to List</a>
+            </div>
+    
         </div>
-
-        <div class="d-flex">
-            <input
-                oninvalid="InvalidMsg(this);" oninput="InvalidMsg(this);"
-                type="text" name="SearchString" value="@ViewData["CurrentFilter"]"
-                required pattern="\S+.*" placeholder=""
-                class="w-49 mr-1"/>
-            <button type="submit" value="Search" class="btn btn-primary mr-1">Search</button>
-            <a asp-action="Index" class="btn btn-info mr-1">Back to List</a>
-        </div>
-
-    </div>
-</form>
-
-<table style="width: 100%">
-    <thead>
-    <tr>
-        <th>No. </th>
-        <th>Name</th>
-        <th>Description</th>
-        <th>Action</th>
-    </tr>
-    </thead>
-
-    <tbody id="tblData">
-    @{ var i = 1; }
-    @foreach (var category in @Model)
-    {
+    </form>
+    
+    <table style="width: 100%">
+        <thead>
         <tr>
-            <td>@i</td>
-            <td>@category.Name</td>
-            <td>@category.Description</td>
-            <td>
-                <a asp-controller="Categories" asp-action="UpSert" asp-route-id="@category.Id" class="btn btn-info">Edit</a>
-                <a asp-controller="Categories" asp-action="Delete" asp-route-id="@category.Id" class="btn btn-danger" onclick="return confirm('Do you want delete this item?')">Delete</a>
-            </td>
+            <th>No. </th>
+            <th>Name</th>
+            <th>Description</th>
+            <th>Action</th>
         </tr>
-        i++;
-    }
-    </tbody>
-</table>
-
+        </thead>
+    
+        <tbody id="tblData">
+        @{ var i = 1; }
+        @foreach (var category in @Model)
+        {
+            <tr>
+                <td>@i</td>
+                <td>@category.Name</td>
+                <td>@category.Description</td>
+                <td>
+                    <a asp-controller="Categories" asp-action="UpSert" asp-route-id="@category.Id" class="btn btn-info">Edit</a>
+                    <a asp-controller="Categories" asp-action="Delete" asp-route-id="@category.Id" class="btn btn-danger" onclick="return confirm('Do you want delete this item?')">Delete</a>
+                </td>
+            </tr>
+            i++;
+        }
+        </tbody>
+    </table>
+}
+else
+{
+    <h2>No Value Catagory</h2>
+}
+    
 <script>
         function InvalidMsg(textbox) {
 

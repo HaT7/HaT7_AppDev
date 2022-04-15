@@ -38,24 +38,35 @@ namespace HaT7FptBook.Areas.StoreOwner.Controllers
             var claimIdentity = (ClaimsIdentity) User.Identity;
             var claims = claimIdentity.FindFirst(ClaimTypes.NameIdentifier);
             var storeId = _db.Stores.FirstOrDefault(a => a.StoreOwnerId == claims.Value);
-            
-            var products = _db.Products
-                .Where(s => s.Title.Contains(searchString) || s.Category.Name.Contains(searchString))
-                .Include(a => a.Category)
-                .OrderBy(a => a.CreateAt)
-                .ToList();
-            int numberOfRecords = products.Count();
-            int numberOfPages = (int) Math.Ceiling((double) numberOfRecords / _recordsPerPage);
-            ViewBag.numberOfPages = numberOfPages;
-            ViewBag.currentPage = id;
-            ViewData["CurrentFilter"] = searchString;
-            var productList = products
-                .Skip(id * _recordsPerPage)
-                .Take(_recordsPerPage)
-                .Where(a=>a.StoreId == storeId.Id)
-                .ToList();
 
-            return View(productList);
+            try
+            {
+                var products = _db.Products
+                    .Where(s => s.Title.Contains(searchString) || s.Category.Name.Contains(searchString))
+                    .Where(a=>a.StoreId == storeId.Id)
+                    .Include(a => a.Category)
+                    .OrderBy(a => a.CreateAt)
+                    .ToList();
+                int numberOfRecords = products.Count();
+                int numberOfPages = (int) Math.Ceiling((double) numberOfRecords / _recordsPerPage);
+                ViewBag.numberOfPages = numberOfPages;
+                ViewBag.currentPage = id;
+                ViewData["CurrentFilter"] = searchString;
+                var productList = products
+                    .Skip(id * _recordsPerPage)
+                    .Take(_recordsPerPage)
+                    .Where(a=>a.StoreId == storeId.Id)
+                    .ToList();
+
+                return View(productList);
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine("'Product Error: " + e.Message);
+                ViewData["Message"] = "Error: " + e.Message;
+            }
+            
+            return View(new List<Product>());
         }
 
         //====================== DELETE ==========================
@@ -94,9 +105,21 @@ namespace HaT7FptBook.Areas.StoreOwner.Controllers
         {
             ProductUpSertVM productUpSertVM = new ProductUpSertVM();
             productUpSertVM.CategoryList = CategorySelectListItems();
+            var claimIdentity = (ClaimsIdentity) User.Identity;
+            var claims = claimIdentity.FindFirst(ClaimTypes.NameIdentifier);
+
+            var storeId = _db.Stores.FirstOrDefault(a => a.StoreOwnerId == claims.Value);
+            
+            if (storeId == null)
+            {
+                ViewData["Message"] = "Error: Store Id not exist";
+                return View(productUpSertVM);
+            }
+            
             if (id == 0 || id == null)
             {
                 productUpSertVM.Product = new Product();
+                productUpSertVM.Product.StoreId = storeId.Id;
                 return View(productUpSertVM);
             }
 
@@ -108,17 +131,11 @@ namespace HaT7FptBook.Areas.StoreOwner.Controllers
         [Authorize(Roles = SD.Role_StoreOwner)]
         public IActionResult UpSert(ProductUpSertVM productUpSertVm)
         {
-            var claimIdentity = (ClaimsIdentity) User.Identity;
-            var claims = claimIdentity.FindFirst(ClaimTypes.NameIdentifier);
-
-            var storeId = _db.Stores.FirstOrDefault(a => a.StoreOwnerId == claims.Value);
-            productUpSertVm.Product.StoreId = storeId.Id;
-            
-            // if (!ModelState.IsValid)
-            // {
-            //     productUpSertVm.CategoryList = CategorySelectListItems();
-            //     return View(productUpSertVm);
-            // }
+            if (!ModelState.IsValid)
+            {
+                productUpSertVm.CategoryList = CategorySelectListItems();
+                return View(productUpSertVm);
+            }
 
             // IWebHostEnvironment Cung cấp thông tin về môi trường lưu trữ web mà ứng dụng đang chạy trong đó.
             // IWebHostEnvironment cũng sẽ kiểm tra được là mình đang ở chế độ development hay production

@@ -1,4 +1,6 @@
-﻿using System.Linq;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Security.Claims;
 using HaT7FptBook.Data;
 using HaT7FptBook.Models;
@@ -28,9 +30,19 @@ namespace HaT7FptBook.Areas.StoreOwner.Controllers
             var claims = claimIdentity.FindFirst(ClaimTypes.NameIdentifier);
 
             var storeId = _db.Stores.FirstOrDefault(a => a.StoreOwnerId == claims.Value);
-            
-            var categoryList = _db.Categories.Where(a=>a.StoreId == storeId.Id).ToList();
-            return View(categoryList);
+
+            try
+            {
+                var categoryList = _db.Categories.Where(a => a.StoreId == storeId.Id).ToList();
+                return View(categoryList);
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine("Category Error: " + e.Message);
+                ViewData["Message"] = "Error: " + e.Message;
+            }
+
+            return View(new List<Category>());
         }
 
         //======================== DELETE ==========================
@@ -43,15 +55,28 @@ namespace HaT7FptBook.Areas.StoreOwner.Controllers
             _db.SaveChanges();
             return RedirectToAction(nameof(Index));
         }
-        
+
         //======================== UPSERT ==========================
         [HttpGet]
         [Authorize(Roles = SD.Role_StoreOwner)]
         public IActionResult UpSert(int? id)
         {
+            var claimIdentity = (ClaimsIdentity) User.Identity;
+            var claims = claimIdentity.FindFirst(ClaimTypes.NameIdentifier);
+
+            var storeId = _db.Stores.FirstOrDefault(a => a.StoreOwnerId == claims.Value);
+
+            if (storeId == null)
+            {
+                ViewData["Message"] = "Error: Store Id not exist";
+                return View(new Category());
+            }
+
             if (id == 0 || id == null)
             {
-                return View(new Category());
+                var categoryCreate = new Category();
+                categoryCreate.StoreId = storeId.Id;
+                return View(categoryCreate);
             }
 
             var category = _db.Categories.Find(id);
@@ -60,19 +85,12 @@ namespace HaT7FptBook.Areas.StoreOwner.Controllers
 
         [HttpPost]
         [Authorize(Roles = SD.Role_StoreOwner)]
-        public IActionResult UpSert([Bind("Id, Name, Description")]Category category)
+        public IActionResult UpSert(Category category)
         {
-            var claimIdentity = (ClaimsIdentity) User.Identity;
-            var claims = claimIdentity.FindFirst(ClaimTypes.NameIdentifier);
-
-            var storeId = _db.Stores.FirstOrDefault(a => a.StoreOwnerId == claims.Value);
-            category.StoreId = storeId.Id;
-            
-            // if (!ModelState.IsValid)
-            // {
-            //     return View(category);
-            // }
-
+            if (!ModelState.IsValid)
+            {
+                return View(category);
+            }
             if (category.Id == 0 || category.Id == null)
             {
                 _db.Categories.Add(category);
