@@ -90,6 +90,7 @@ namespace HaT7FptBook.Areas.StoreOwner.Controllers
             var storeId = _db.Stores.FirstOrDefault(a => a.StoreOwnerId == claims.Value);
             
             var categoryList = _db.Categories.Where(a => a.StoreId == storeId.Id).ToList();
+
             var result = categoryList.Select(category => new SelectListItem
             {
                 Text = category.Name,
@@ -105,6 +106,7 @@ namespace HaT7FptBook.Areas.StoreOwner.Controllers
         {
             ProductUpSertVM productUpSertVM = new ProductUpSertVM();
             productUpSertVM.CategoryList = CategorySelectListItems();
+
             var claimIdentity = (ClaimsIdentity) User.Identity;
             var claims = claimIdentity.FindFirst(ClaimTypes.NameIdentifier);
 
@@ -112,8 +114,8 @@ namespace HaT7FptBook.Areas.StoreOwner.Controllers
             
             if (storeId == null)
             {
-                ViewData["Message"] = "Error: Store Id not exist";
-                return View(productUpSertVM);
+                ViewData["Message"] = "Error: Store Id not exist. Let's create your Store and Category first";
+                return RedirectToAction("Index", "Stores", new { area = "StoreOwner"});
             }
             
             if (id == 0 || id == null)

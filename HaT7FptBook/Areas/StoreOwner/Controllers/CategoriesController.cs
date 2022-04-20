@@ -5,6 +5,7 @@ using System.Security.Claims;
 using HaT7FptBook.Data;
 using HaT7FptBook.Models;
 using HaT7FptBook.Utility;
+using HaT7FptBook.ViewModels;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -15,7 +16,6 @@ namespace HaT7FptBook.Areas.StoreOwner.Controllers
     public class CategoriesController : Controller
     {
         private readonly ApplicationDbContext _db;
-
         public CategoriesController(ApplicationDbContext db)
         {
             _db = db;
@@ -23,7 +23,6 @@ namespace HaT7FptBook.Areas.StoreOwner.Controllers
 
         //======================== INDEX ==========================
         [HttpGet]
-        [Authorize(Roles = SD.Role_StoreOwner)]
         public IActionResult Index()
         {
             var claimIdentity = (ClaimsIdentity) User.Identity;
@@ -39,7 +38,7 @@ namespace HaT7FptBook.Areas.StoreOwner.Controllers
             catch (Exception e)
             {
                 Console.WriteLine("Category Error: " + e.Message);
-                ViewData["Message"] = "Error: " + e.Message;
+                ViewData["Message"] = "Error: " + e.Message; 
             }
 
             return View(new List<Category>());
@@ -47,7 +46,6 @@ namespace HaT7FptBook.Areas.StoreOwner.Controllers
 
         //======================== DELETE ==========================
         [HttpGet]
-        [Authorize(Roles = SD.Role_StoreOwner)]
         public IActionResult Delete(int id)
         {
             var category = _db.Categories.Find(id);
@@ -58,7 +56,6 @@ namespace HaT7FptBook.Areas.StoreOwner.Controllers
 
         //======================== UPSERT ==========================
         [HttpGet]
-        [Authorize(Roles = SD.Role_StoreOwner)]
         public IActionResult UpSert(int? id)
         {
             var claimIdentity = (ClaimsIdentity) User.Identity;
@@ -68,8 +65,8 @@ namespace HaT7FptBook.Areas.StoreOwner.Controllers
 
             if (storeId == null)
             {
-                ViewData["Message"] = "Error: Store Id not exist";
-                return View(new Category());
+                ViewData["Message"] = "Error: Store Id not exist. Let's create your Store first";
+                return RedirectToAction("Index", "Stores", new { area = "StoreOwner"});
             }
 
             if (id == 0 || id == null)
@@ -84,7 +81,6 @@ namespace HaT7FptBook.Areas.StoreOwner.Controllers
         }
 
         [HttpPost]
-        [Authorize(Roles = SD.Role_StoreOwner)]
         public IActionResult UpSert(Category category)
         {
             if (!ModelState.IsValid)

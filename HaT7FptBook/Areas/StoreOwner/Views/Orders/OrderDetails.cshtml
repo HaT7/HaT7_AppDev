@@ -1,0 +1,49 @@
+﻿@model IEnumerable<HaT7FptBook.Models.OderDetail>
+
+@{
+    ViewBag.Title = "View all Order";
+    Layout = "_Layout";
+}
+
+
+<h2 class="text-center">Order Details</h2>
+
+<table style="width: 100%">
+    <thead>
+    <tr>
+        <th>Image</th>
+        <th>Product Name</th>
+        <th>Price</th>
+        <th>Quantity</th>
+        <th>Total</th>
+    </tr>
+    </thead>
+
+    @{
+        double sum = 0;
+    }
+    
+    @foreach (var order in @Model)
+    {
+        <tr>
+            <td>
+                <img src="@order.Product.ImageUrl" class="card-img-top rounded" style="width: 200px"/>
+            </td>
+            <td>@order.Product.Title</td>
+            <td>@order.Product.Price</td>
+            <td>@order.Quantity</td>
+            @{
+                var total = @order.Product.Price * @order.Quantity;
+                sum += total;
+            }
+            <td>@total</td>
+        </tr>
+    }
+    <tr>
+        <td></td>
+        <td></td>
+        <td></td>
+        <td></td>
+        <td>Total: @sum</td>
+    </tr>
+</table>

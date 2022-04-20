@@ -45,10 +45,13 @@
                             <a class="nav-link text-dark" asp-area="StoreOwner" asp-controller="Stores" asp-action="Index">Store</a>
                         </li>
                     }
-
-                    @* ================ ICON CART ======================= *@
+                    
                     @if (User.IsInRole("Customer"))
                     {
+                        <li class="nav-item">
+                            <a class="nav-link text-dark" asp-area="Customer" asp-controller="Orders" asp-action="Index">Order</a>
+                        </li>
+                        
                         @if (HttpContextAccessor.HttpContext.Session.GetInt32(SD.ssShoppingCart) != null)
                         {
                             <li style="color: white">

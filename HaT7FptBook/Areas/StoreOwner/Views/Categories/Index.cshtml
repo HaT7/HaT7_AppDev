@@ -5,16 +5,16 @@
     Layout = "_Layout";
 }
 
-<h2>List Category</h2>
-<partial name="_StatusMessenger" model="@ViewData["Message"]"/>
 @if (Model.Any())
 {
+    <h2 class="text-center">List Category</h2>
+    <partial name="_StatusMessenger" model="@ViewData["Message"]"/>
     <form asp-action="Index" method="get">
         <div class="d-flex flex-row justify-content-between mt-3 mb-1">
             <div>
                 <a asp-controller="Categories" asp-action="UpSert" class="btn btn-primary">Create new Category</a>
             </div>
-    
+
             <div class="d-flex">
                 <input
                     oninvalid="InvalidMsg(this);" oninput="InvalidMsg(this);"
@@ -24,10 +24,9 @@
                 <button type="submit" value="Search" class="btn btn-primary mr-1">Search</button>
                 <a asp-action="Index" class="btn btn-info mr-1">Back to List</a>
             </div>
-    
         </div>
     </form>
-    
+
     <table style="width: 100%">
         <thead>
         <tr>
@@ -37,8 +36,7 @@
             <th>Action</th>
         </tr>
         </thead>
-    
-        <tbody id="tblData">
+
         @{ var i = 1; }
         @foreach (var category in @Model)
         {
@@ -53,14 +51,17 @@
             </tr>
             i++;
         }
-        </tbody>
     </table>
 }
 else
 {
-    <h2>No Value Catagory</h2>
+    <h2 class="text-center">No Value Catagory</h2>
+    <div class="text-center">
+        <a asp-controller="Categories" asp-action="UpSert" class="btn btn-primary">Create new Category</a>
+    </div>
+    <partial name="_StatusMessenger" model="@ViewData["Message"]"/>
 }
-    
+
 <script>
         function InvalidMsg(textbox) {
 

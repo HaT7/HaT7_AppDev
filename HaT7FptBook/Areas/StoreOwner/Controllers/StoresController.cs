@@ -1,4 +1,6 @@
-﻿using System.Linq;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Security.Claims;
 using HaT7FptBook.Data;
 using HaT7FptBook.Models;
@@ -13,7 +15,6 @@ namespace HaT7FptBook.Areas.StoreOwner.Controllers
     public class StoresController : Controller
     {
         private readonly ApplicationDbContext _db;
-
         public StoresController(ApplicationDbContext db)
         {
             _db = db;
@@ -27,8 +28,18 @@ namespace HaT7FptBook.Areas.StoreOwner.Controllers
             var claimIdentity = (ClaimsIdentity) User.Identity;
             var claims = claimIdentity.FindFirst(ClaimTypes.NameIdentifier);
             
-            var storeList = _db.Stores.Where(a=>a.StoreOwnerId == claims.Value).ToList();
-            return View(storeList);
+            try
+            {
+                var storeList = _db.Stores.Where(a=>a.StoreOwnerId == claims.Value).ToList();
+                return View(storeList);
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine("Store Error: " + e.Message);
+                ViewData["Message"] = "Error: " + e.Message;
+            }
+            
+            return View(new List<Store>());
         }
 
         //======================== DELETE ==========================
