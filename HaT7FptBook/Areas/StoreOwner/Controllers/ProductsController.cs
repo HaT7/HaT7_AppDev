@@ -13,6 +13,7 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.VisualStudio.Web.CodeGeneration.Contracts.Messaging;
 
 namespace HaT7FptBook.Areas.StoreOwner.Controllers
 {
@@ -39,11 +40,22 @@ namespace HaT7FptBook.Areas.StoreOwner.Controllers
             var claims = claimIdentity.FindFirst(ClaimTypes.NameIdentifier);
             var storeId = _db.Stores.FirstOrDefault(a => a.StoreOwnerId == claims.Value);
 
+            if (storeId == null)
+            {
+                ViewData["Message"] = "Error: Store Id not exist. Let's create your Store and Category first";
+                return RedirectToAction("Index", "Stores", new {area = "StoreOwner"});
+            }
+
+            if (storeId != null && !_db.Categories.Any(a => a.StoreId == storeId.Id))
+            {
+                return RedirectToAction("Index", "Categories", new {area = "StoreOwner"});
+            }
+
             try
             {
                 var products = _db.Products
                     .Where(s => s.Title.Contains(searchString) || s.Category.Name.Contains(searchString))
-                    .Where(a=>a.StoreId == storeId.Id)
+                    .Where(a => a.StoreId == storeId.Id)
                     .Include(a => a.Category)
                     .OrderBy(a => a.CreateAt)
                     .ToList();
@@ -55,7 +67,7 @@ namespace HaT7FptBook.Areas.StoreOwner.Controllers
                 var productList = products
                     .Skip(id * _recordsPerPage)
                     .Take(_recordsPerPage)
-                    .Where(a=>a.StoreId == storeId.Id)
+                    .Where(a => a.StoreId == storeId.Id)
                     .ToList();
 
                 return View(productList);
@@ -65,7 +77,7 @@ namespace HaT7FptBook.Areas.StoreOwner.Controllers
                 Console.WriteLine("'Product Error: " + e.Message);
                 ViewData["Message"] = "Error: " + e.Message;
             }
-            
+
             return View(new List<Product>());
         }
 
@@ -88,7 +100,7 @@ namespace HaT7FptBook.Areas.StoreOwner.Controllers
             var claims = claimIdentity.FindFirst(ClaimTypes.NameIdentifier);
 
             var storeId = _db.Stores.FirstOrDefault(a => a.StoreOwnerId == claims.Value);
-            
+
             var categoryList = _db.Categories.Where(a => a.StoreId == storeId.Id).ToList();
 
             var result = categoryList.Select(category => new SelectListItem
@@ -111,13 +123,7 @@ namespace HaT7FptBook.Areas.StoreOwner.Controllers
             var claims = claimIdentity.FindFirst(ClaimTypes.NameIdentifier);
 
             var storeId = _db.Stores.FirstOrDefault(a => a.StoreOwnerId == claims.Value);
-            
-            if (storeId == null)
-            {
-                ViewData["Message"] = "Error: Store Id not exist. Let's create your Store and Category first";
-                return RedirectToAction("Index", "Stores", new { area = "StoreOwner"});
-            }
-            
+
             if (id == 0 || id == null)
             {
                 productUpSertVM.Product = new Product();
@@ -141,7 +147,7 @@ namespace HaT7FptBook.Areas.StoreOwner.Controllers
 
             // IWebHostEnvironment Cung cấp thông tin về môi trường lưu trữ web mà ứng dụng đang chạy trong đó.
             // IWebHostEnvironment cũng sẽ kiểm tra được là mình đang ở chế độ development hay production
-            
+
             // WebRootPath - Đường dẫn của thư mục www
             // WebRootPath − Path of the www folder(Gets or sets the absolute path to the directory that contains the
             // web-servable application content files)
@@ -149,7 +155,7 @@ namespace HaT7FptBook.Areas.StoreOwner.Controllers
             var files = HttpContext.Request.Form.Files;
             if (files.Count > 0)
             {
-                string fileName = Guid.NewGuid().ToString();
+                string fileName = productUpSertVm.Product.ISBN + "_" + Guid.NewGuid();
                 var uploads = Path.Combine(webRootPath, @"images/products");
                 var extension = Path.GetExtension(files[0].FileName);
                 if (productUpSertVm.Product.Id != 0)
@@ -187,11 +193,19 @@ namespace HaT7FptBook.Areas.StoreOwner.Controllers
                 //update without change the images
                 if (productUpSertVm.Product.Id != 0)
                 {
-                    Product objFromDb = _db.Products.AsNoTracking().Where(a => a.Id == productUpSertVm.Product.Id).First();
+                    Product objFromDb = _db.Products.AsNoTracking().Where(a => a.Id == productUpSertVm.Product.Id)
+                        .First();
                     productUpSertVm.Product.ImageUrl = objFromDb.ImageUrl;
                 }
             }
 
+            if (_db.Products.Any(a => a.ISBN.ToLower().Trim() == productUpSertVm.Product.ISBN.ToLower().Trim() && a.Id != productUpSertVm.Product.Id))
+            {
+                ViewData["Message"] = "Error: ISBN already exist";
+                productUpSertVm.CategoryList = CategorySelectListItems();
+                return View(productUpSertVm);
+            }
+            
             if (productUpSertVm.Product.Id == 0 || productUpSertVm.Product.Id == null)
             {
                 _db.Products.Add(productUpSertVm.Product);

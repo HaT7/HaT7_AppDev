@@ -21,7 +21,7 @@ namespace HaT7FptBook.Models
         [Required]
         public double Price { get; set; }
         public string ImageUrl { get; set; }
-
+        [Required] public string ISBN { get; set; }
         public DateTime CreateAt { get; set; }
 
         public Product()

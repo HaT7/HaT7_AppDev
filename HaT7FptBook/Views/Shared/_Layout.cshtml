@@ -42,16 +42,15 @@
                             <a class="nav-link text-dark" asp-area="StoreOwner" asp-controller="Categories" asp-action="Index">Category</a>
                         </li>
                         <li class="nav-item">
+                            <a class="nav-link text-dark" asp-area="StoreOwner" asp-controller="Orders" asp-action="Index">Order</a>
+                        </li>
+                        <li class="nav-item">
                             <a class="nav-link text-dark" asp-area="StoreOwner" asp-controller="Stores" asp-action="Index">Store</a>
                         </li>
                     }
                     
                     @if (User.IsInRole("Customer"))
                     {
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="Customer" asp-controller="Orders" asp-action="Index">Order</a>
-                        </li>
-                        
                         @if (HttpContextAccessor.HttpContext.Session.GetInt32(SD.ssShoppingCart) != null)
                         {
                             <li style="color: white">

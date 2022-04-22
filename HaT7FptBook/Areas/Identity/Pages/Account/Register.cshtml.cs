@@ -142,7 +142,7 @@ namespace HaT7FptBook.Areas.Identity.Pages.Account
             {
                 //Mình sẽ lấy hết cái role ra, trong đó mình chọn thằng role name, mỗi thằng role name sẽ tạo
                 //ra một cái SelectListItem
-                RoleList = _roleManager.Roles.Select(a => a.Name).Select(a => new SelectListItem
+                RoleList = _roleManager.Roles.Where(a=> a.Name != "Admin").Select(a => a.Name).Select(a => new SelectListItem
                 {
                     Text = a,
                     Value = a

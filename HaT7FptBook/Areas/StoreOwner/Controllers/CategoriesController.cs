@@ -30,6 +30,12 @@ namespace HaT7FptBook.Areas.StoreOwner.Controllers
 
             var storeId = _db.Stores.FirstOrDefault(a => a.StoreOwnerId == claims.Value);
 
+            if (storeId == null)
+            {
+                ViewData["Message"] = "Error: Store Id not exist. Let's create your Store first";
+                return RedirectToAction("Index", "Stores", new { area = "StoreOwner"});
+            }
+            
             try
             {
                 var categoryList = _db.Categories.Where(a => a.StoreId == storeId.Id).ToList();
@@ -62,12 +68,6 @@ namespace HaT7FptBook.Areas.StoreOwner.Controllers
             var claims = claimIdentity.FindFirst(ClaimTypes.NameIdentifier);
 
             var storeId = _db.Stores.FirstOrDefault(a => a.StoreOwnerId == claims.Value);
-
-            if (storeId == null)
-            {
-                ViewData["Message"] = "Error: Store Id not exist. Let's create your Store first";
-                return RedirectToAction("Index", "Stores", new { area = "StoreOwner"});
-            }
 
             if (id == 0 || id == null)
             {

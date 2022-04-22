@@ -46,11 +46,11 @@ namespace HaT7FptBook.Areas.Customer.Controllers
         [HttpGet]
         public IActionResult OrderDetails(int orderHeaderId)
         {
-            var bookList = _db.OderDetails
+            var orderDetails = _db.OderDetails
                 .Where(a => a.OrderHeaderId == orderHeaderId)
                 .Include(a => a.Product)
                 .ToList();
-            return View(bookList);
+            return View(orderDetails);
         }
     }
 }
