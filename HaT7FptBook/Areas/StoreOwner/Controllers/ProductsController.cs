@@ -54,7 +54,7 @@ namespace HaT7FptBook.Areas.StoreOwner.Controllers
             try
             {
                 var products = _db.Products
-                    .Where(s => s.Title.Contains(searchString) || s.Category.Name.Contains(searchString))
+                    .Where(s => s.Title.Contains(searchString) || s.ISBN.Contains(searchString))
                     .Where(a => a.StoreId == storeId.Id)
                     .Include(a => a.Category)
                     .OrderBy(a => a.CreateAt)
@@ -74,7 +74,7 @@ namespace HaT7FptBook.Areas.StoreOwner.Controllers
             }
             catch (Exception e)
             {
-                Console.WriteLine("'Product Error: " + e.Message);
+                Console.WriteLine("Product Error: " + e.Message);
                 ViewData["Message"] = "Error: " + e.Message;
             }
 

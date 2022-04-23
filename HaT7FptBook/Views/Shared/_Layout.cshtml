@@ -65,7 +65,7 @@
                         else
                         {
                             <li style="color: white">
-                                <a href="#" class="nav-link">
+                                <a asp-area="Customer" asp-controller="Carts" asp-action="Index" class="nav-link">
                                     @{
                                         var count = HttpContextAccessor.HttpContext.Session.GetInt32(SD.ssShoppingCart);
                                     }

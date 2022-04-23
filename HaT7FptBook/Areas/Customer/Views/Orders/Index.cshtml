@@ -12,6 +12,7 @@
     <table style="width: 100%">
         <thead>
         <tr>
+            <th>Order Id</th>
             <th>Order Date</th>
             <th>Total</th>
             <th>Action</th>
@@ -21,6 +22,7 @@
         @foreach (var order in @Model)
         {
             <tr>
+                <td>@order.Id</td>
                 <td>@order.OderDate</td>
                 <td>@order.Total</td>
                 <td>

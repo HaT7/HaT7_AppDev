@@ -21,7 +21,7 @@ using Microsoft.Extensions.Options;
 
 namespace HaT7FptBook.Areas.Customer.Controllers
 {
-    [Area("Customer")]
+    [Area(SD.Area_Customer)]
     [Authorize(Roles = SD.Role_Customer)]
     public class CartsController : Controller
     {
@@ -39,7 +39,7 @@ namespace HaT7FptBook.Areas.Customer.Controllers
             ShoppingCartVM = new ShoppingCartVM()
             {
                 OrderHeader = new Models.OrderHeader(),
-                ListCarts = _db.Carts.Where(u => u.UserId == claim.Value).Include(p => p.Product)
+                ListCarts = _db.Carts.Where(u => u.UserId == claim.Value).Include(p => p.Product.Category)
             };
             
             ShoppingCartVM.OrderHeader.Total = 0;

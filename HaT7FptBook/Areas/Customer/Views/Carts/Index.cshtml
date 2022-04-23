@@ -2,7 +2,7 @@
 
 <form method="post">
     <br/>
-    @if (Model.ListCarts.Count() > 0)
+    @if (Model.ListCarts.Any())
     {
         <div class="backgroundWhiteBorder">
             <div class="container">
@@ -24,9 +24,14 @@
                                     <img src="@item.Product.ImageUrl" class="rounded" width="100%"/>
                                 </div>
                                 <div class="col-12 text-sm-center col-lg-6 text-lg-left">
-                                    <h5>
-                                        <strong>@item.Product.Title</strong>
-                                    </h5>
+                                    <div class="d-flex">
+                                        <h5>
+                                            <strong>@item.Product.Title</strong>
+                                        </h5>
+                                        <div class="col-12 text-sm-center col-lg-6 text-lg-left">
+                                            <span class="badge badge-warning pt-2" style="height:30px;">@item.Product.Category.Name</span>
+                                        </div>
+                                    </div>
                                     <p>
                                         <small>@item.Product.Description</small>
                                     </p>
