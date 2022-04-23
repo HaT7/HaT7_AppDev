@@ -42,12 +42,13 @@ namespace HaT7FptBook.Areas.StoreOwner.Controllers
 
             if (storeId == null)
             {
-                ViewData["Message"] = "Error: Store Id not exist. Let's create your Store and Category first";
+                ViewData["Message"] = "Error: Store not exist. Let's create your Store and Category first";
                 return RedirectToAction("Index", "Stores", new {area = "StoreOwner"});
             }
 
             if (storeId != null && !_db.Categories.Any(a => a.StoreId == storeId.Id))
             {
+                ViewData["Message"] = "Error: Category not exist. Let's create your Category first";
                 return RedirectToAction("Index", "Categories", new {area = "StoreOwner"});
             }
 

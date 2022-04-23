@@ -16,6 +16,7 @@ namespace HaT7FptBook.Areas.StoreOwner.Controllers
     public class CategoriesController : Controller
     {
         private readonly ApplicationDbContext _db;
+        private readonly int _recordsPerPage = 10;
         public CategoriesController(ApplicationDbContext db)
         {
             _db = db;
@@ -23,7 +24,7 @@ namespace HaT7FptBook.Areas.StoreOwner.Controllers
 
         //======================== INDEX ==========================
         [HttpGet]
-        public IActionResult Index()
+        public IActionResult Index(int id = 0, string searchString = "")
         {
             var claimIdentity = (ClaimsIdentity) User.Identity;
             var claims = claimIdentity.FindFirst(ClaimTypes.NameIdentifier);
@@ -38,7 +39,22 @@ namespace HaT7FptBook.Areas.StoreOwner.Controllers
             
             try
             {
-                var categoryList = _db.Categories.Where(a => a.StoreId == storeId.Id).ToList();
+                var categories = _db.Categories
+                    .Where(s => s.Name.Contains(searchString))
+                    .Where(a => a.StoreId == storeId.Id)
+                    .OrderBy(a => a.CreateAt)
+                    .ToList();
+                int numberOfRecords = categories.Count();
+                int numberOfPages = (int) Math.Ceiling((double) numberOfRecords / _recordsPerPage);
+                ViewBag.numberOfPages = numberOfPages;
+                ViewBag.currentPage = id;
+                ViewData["CurrentFilter"] = searchString;
+                var categoryList = categories
+                    .Skip(id * _recordsPerPage)
+                    .Take(_recordsPerPage)
+                    .Where(a => a.StoreId == storeId.Id)
+                    .ToList();
+
                 return View(categoryList);
             }
             catch (Exception e)

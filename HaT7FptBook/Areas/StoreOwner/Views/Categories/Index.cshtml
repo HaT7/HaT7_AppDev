@@ -52,6 +52,20 @@
             i++;
         }
     </table>
+    
+    <div style="display:flex;text-align:center;justify-content:center">
+        <nav aria-label="Page navigation example">
+            <ul class="pagination">
+                @for (var x = 0; x < @ViewBag.numberOfPages; x++)
+                {
+                    var style = (ViewBag.currentPage == @x) ? "active" : "";
+                    <li class="page-item @style">
+                        <a class="page-link" asp-route-id="@x" asp-route-searchString="@ViewData["CurrentFilter"]">@(x + 1)</a>
+                    </li>
+                }
+            </ul>
+        </nav>
+    </div>
 }
 else
 {
