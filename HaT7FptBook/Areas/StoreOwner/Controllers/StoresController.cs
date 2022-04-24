@@ -75,6 +75,12 @@ namespace HaT7FptBook.Areas.StoreOwner.Controllers
             var claims = claimIdentity.FindFirst(ClaimTypes.NameIdentifier);
             store.StoreOwnerId = claims.Value;
 
+            if (_db.Stores.Any(a => a.Name.ToLower().Trim() == store.Name.ToLower().Trim() && a.StoreOwnerId != store.StoreOwnerId))
+            {
+                ViewData["Message"] = "Error: Store name already exist";
+                return View(store);
+            }
+            
             if (store.Id == 0 || store.Id == null)
             {
                 var checkStoreExist = _db.Stores.Any(a=> a.StoreOwnerId == claims.Value);

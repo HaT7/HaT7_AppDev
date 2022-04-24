@@ -39,13 +39,13 @@ namespace HaT7FptBook
                 .AddEntityFrameworkStores<ApplicationDbContext>();
             services.AddControllersWithViews();
             services.AddScoped<IDbInitializer, DbInitializer>();
-            
+
             services.AddOptions();
             var mailsettings = Configuration.GetSection("MailSettings");
             services.Configure<MailSettings>(mailsettings);
 
             services.AddTransient<ISendMailService, SendMailService>();
-            
+
             services.ConfigureApplicationCookie(options =>
             {
                 options.LoginPath = $"/Identity/Account/Login";
@@ -85,7 +85,7 @@ namespace HaT7FptBook
             app.UseAuthorization();
 
             dbInitializer.Initializer();
-            
+
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapControllerRoute(

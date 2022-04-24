@@ -1,33 +1,62 @@
 ﻿@model IList<HaT7FptBook.Models.Store>
 
 @{
-    ViewBag.Title = "View all Store";
+    ViewBag.Title = "Store";
     Layout = "_Layout";
 }
 
 <partial name="_StatusMessenger" model="@ViewData["Message"]"/>
 @if (Model.Any())
 {
-    <h2>List Store</h2>
-    <table style="width: 100%">
-        <thead>
-        <tr>
-            <th>Name</th>
-            <th>Action</th>
-        </tr>
-        </thead>
+    @foreach (var store in @Model)
+    {
+        <div>
+            <h1 class="text-center font-weight-bold">@store.Name Book Store</h1>
+        </div>
 
-        @foreach (var store in @Model)
-        {
-            <tr>
-                <td>@store.Name</td>
-                <td>
-                    <a asp-controller="Stores" asp-action="UpSert" asp-route-id="@store.Id" class="btn btn-info">Edit</a>
-                    <a asp-controller="Stores" asp-action="Delete" asp-route-id="@store.Id" class="btn btn-danger" onclick="return confirm('Do you want delete this item?')">Delete</a>
-                </td>
-            </tr>
-        }
-    </table>
+        <div>
+            <div class="row mb-2">
+                <div class="col-3">
+                    <h5>View order information</h5>
+                    <p>Hiện tại đang có: </p>
+                </div>
+
+                <div class="col">
+                    <a class="btn btn-info" asp-area="StoreOwner" asp-controller="Orders" asp-action="Index">Order</a>
+                </div>
+            </div>
+
+            <div class="row mb-2">
+                <div class="col-3">
+                    <h5>Manage product list</h5>
+                </div>
+
+                <div class="col">
+                    <a class="btn btn-info" asp-area="StoreOwner" asp-controller="Products" asp-action="Index">Product</a>
+                </div>
+            </div>
+
+            <div class="row mb-2">
+                <div class="col-3">
+                    <h5>Manage category list</h5>
+                </div>
+
+                <div class="col">
+                    <a class="btn btn-info" asp-area="StoreOwner" asp-controller="Categories" asp-action="Index">Cateogry</a>
+                </div>
+            </div>
+
+            <div class="row mb-2">
+                <div class="col-3">
+                    <h5>Edit your store information</h5>
+                </div>
+
+                <div class="col">
+                    <a class="btn btn-info" asp-controller="Stores" asp-action="UpSert" asp-route-id="@store.Id">Edit</a>
+                </div>
+            </div>
+        </div>
+    }
 }
 else
 {

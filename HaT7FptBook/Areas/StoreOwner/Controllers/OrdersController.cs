@@ -31,14 +31,13 @@ namespace HaT7FptBook.Areas.StoreOwner.Controllers
 
             var claimIdentity = (ClaimsIdentity) User.Identity;
             var claims = claimIdentity.FindFirst(ClaimTypes.NameIdentifier);
-
             var storeId = _db.Stores.FirstOrDefault(a => a.StoreOwnerId == claims.Value);
 
-            if (storeId == null)
-            {
-                ViewData["Message"] = "Error: Store Id not exist. Let's create your Store";
-                return RedirectToAction("Index", "Stores", new {area = "StoreOwner"});
-            }
+            // if (storeId == null)
+            // {
+            //     ViewData["Message"] = "Error: Store Id not exist. Let's create your Store";
+            //     return RedirectToAction("Index", "Stores", new {area = "StoreOwner"});
+            // }
             
             var oderDetails = _db.OderDetails.Include(a => a.Product).ToList();
             foreach (var od in oderDetails)
