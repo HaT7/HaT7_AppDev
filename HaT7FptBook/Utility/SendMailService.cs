@@ -73,7 +73,7 @@ namespace HaT7FptBook.Utility
             {
                 To = email,
                 Subject = subject,
-                Body = htmlMessage
+                Body = htmlMessage // Body này có thể là một htmlMessage hay là một page html,css
             });
         }
     }

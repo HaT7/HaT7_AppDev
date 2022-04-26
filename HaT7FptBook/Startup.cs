@@ -40,10 +40,13 @@ namespace HaT7FptBook
             services.AddControllersWithViews();
             services.AddScoped<IDbInitializer, DbInitializer>();
 
+            
+            // Configuration.GetSection("MailSettings"): lấy tất cả những value của cái key MailSettings trong file
+            // appsetting.json và match ping vào những object trong file MailSettings (trong folder Ulitity). Khi mình
+            // gọi cái file MailSettings ra thì nó sẽ bao gồm những value có sẵn đó.
             services.AddOptions();
             var mailsettings = Configuration.GetSection("MailSettings");
             services.Configure<MailSettings>(mailsettings);
-
             services.AddTransient<ISendMailService, SendMailService>();
 
             services.ConfigureApplicationCookie(options =>

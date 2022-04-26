@@ -45,14 +45,14 @@ namespace HaT7FptBook.Areas.Admin.Controllers
                 .OrderBy(a => a.CreateAt)
                 .ToList();
 
-           foreach (var user in userList)
+            foreach (var user in userList)
             {
                 var userTemp = await _userManager.FindByIdAsync(user.Id);
                 var roleTemp = await _userManager.GetRolesAsync(userTemp);
                 user.Role = roleTemp.First();
             }
 
-           return View(userList);
+            return View(userList);
         }
 
         //================================= DELETE =================================
@@ -65,7 +65,7 @@ namespace HaT7FptBook.Areas.Admin.Controllers
             {
                 return NotFound();
             }
-
+                
             await _userManager.DeleteAsync(user);
 
             return RedirectToAction(nameof(Index));
@@ -109,7 +109,7 @@ namespace HaT7FptBook.Areas.Admin.Controllers
                 userInDb.FullName = updataUserVm.ApplicationUser.FullName;
                 userInDb.Address = updataUserVm.ApplicationUser.Address;
                 userInDb.PhoneNumber = updataUserVm.ApplicationUser.PhoneNumber;
-                
+
                 var oldRole = await _userManager.GetRolesAsync(userInDb);
                 if (oldRole.First() != updataUserVm.Role)
                 {
