@@ -4,7 +4,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace HaT7FptBook.Models
 {
-    public class Product
+    public class Book
     {
         [Key] public int Id { get; set; }
         [Required] public int StoreId { get; set; }
@@ -20,11 +20,11 @@ namespace HaT7FptBook.Models
         [DataType(DataType.Currency)]
         [Required]
         public double Price { get; set; }
-        public string ImageUrl { get; set; }
+        [Required] public string ImageUrl { get; set; }
         [Required] public string ISBN { get; set; }
         public DateTime CreateAt { get; set; }
 
-        public Product()
+        public Book()
         {
             CreateAt = DateTime.Now;
         }

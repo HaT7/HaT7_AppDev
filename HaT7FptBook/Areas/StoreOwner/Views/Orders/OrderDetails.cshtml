@@ -27,13 +27,13 @@
     {
         <tr>
             <td>
-                <img src="@order.Product.ImageUrl" class="card-img-top rounded" style="width: 200px"/>
+                <img src="@order.Book.ImageUrl" class="card-img-top rounded" style="width: 200px"/>
             </td>
-            <td>@order.Product.Title</td>
-            <td>@order.Product.Price</td>
+            <td>@order.Book.Title</td>
+            <td>@order.Book.Price</td>
             <td>@order.Quantity</td>
             @{
-                var total = @order.Product.Price * @order.Quantity;
+                var total = @order.Book.Price * @order.Quantity;
                 sum += total;
             }
             <td>@total</td>

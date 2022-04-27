@@ -30,7 +30,12 @@ namespace HaT7FptBook.Areas.Customer.Controllers
 
         public async Task<IActionResult> Index(int id = 0, string searchString = "")
         {
-            var products = _db.Products
+            if (User.IsInRole(SD.Role_StoreOwner))
+            {
+                return RedirectToAction("Index", "Stores", new {area = "StoreOwner"});
+            }
+            
+            var products = _db.Books
                 .Where(s => s.Title.Contains(searchString) || s.Category.Name.Contains(searchString))
                 .Include(a => a.Category)
                 .ToList();
@@ -49,13 +54,13 @@ namespace HaT7FptBook.Areas.Customer.Controllers
         public IActionResult Details(int id)
         {
             // Thực chất là hiện ra một cái cart dưới dạng product detail (có hiện ra cái count của cart nữa)
-            var productFromDb = _db.Products
+            var productFromDb = _db.Books
                 .Include(a => a.Category)
                 .FirstOrDefault(a => a.Id == id);
             Cart cart = new Cart()
             {
-                Product = productFromDb,
-                ProductId = productFromDb.Id
+                Book = productFromDb,
+                BookId = productFromDb.Id
             };
             return View(cart);
         }
@@ -77,7 +82,7 @@ namespace HaT7FptBook.Areas.Customer.Controllers
                 CartObject.UserId = claim.Value;
 
                 Cart cartFromDb = _db.Carts
-                    .FirstOrDefault(u => u.UserId == CartObject.UserId && u.ProductId == CartObject.ProductId);
+                    .FirstOrDefault(u => u.UserId == CartObject.UserId && u.BookId == CartObject.BookId);
 
                 if (cartFromDb == null)
                 {
@@ -102,13 +107,13 @@ namespace HaT7FptBook.Areas.Customer.Controllers
             }
             else
             {
-                var productFromDb = _db.Products
+                var productFromDb = _db.Books
                     .Include(a => a.Category)
-                    .FirstOrDefault(u => u.Id == CartObject.ProductId);
+                    .FirstOrDefault(u => u.Id == CartObject.BookId);
                 Cart cart = new Cart()
                 {
-                    Product = productFromDb,
-                    ProductId = productFromDb.Id
+                    Book = productFromDb,
+                    BookId = productFromDb.Id
                 };
                 return View(cart);
             }

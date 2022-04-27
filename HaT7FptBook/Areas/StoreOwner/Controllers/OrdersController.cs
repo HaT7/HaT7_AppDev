@@ -39,10 +39,10 @@ namespace HaT7FptBook.Areas.StoreOwner.Controllers
             //     return RedirectToAction("Index", "Stores", new {area = "StoreOwner"});
             // }
             
-            var oderDetails = _db.OderDetails.Include(a => a.Product).ToList();
+            var oderDetails = _db.OderDetails.Include(a => a.Book).ToList();
             foreach (var od in oderDetails)
             {
-                var valid = od.Product.StoreId == storeId.Id;
+                var valid = od.Book.StoreId == storeId.Id;
                 if (valid)
                 {
                     listId.Add(od.OrderHeaderId);
@@ -80,13 +80,13 @@ namespace HaT7FptBook.Areas.StoreOwner.Controllers
             
             var orderDetails = _db.OderDetails
                 .Where(a => a.OrderHeaderId == orderHeaderId)
-                .Include(a => a.Product)
+                .Include(a => a.Book)
                 .ToList();
 
             var pIOD = new List<OderDetail>();
             foreach (var item in orderDetails)
             {
-                var productInOrderDetails = item.Product.StoreId == storeId.Id;
+                var productInOrderDetails = item.Book.StoreId == storeId.Id;
                 if (productInOrderDetails)
                 {
                     pIOD.Add(item);

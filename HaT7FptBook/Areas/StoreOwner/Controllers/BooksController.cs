@@ -19,13 +19,13 @@ namespace HaT7FptBook.Areas.StoreOwner.Controllers
 {
     [Area(SD.Area_StoreOwner)]
     [Authorize(Roles = SD.Role_StoreOwner)]
-    public class ProductsController : Controller
+    public class BooksController : Controller
     {
         private readonly ApplicationDbContext _db;
         private readonly IWebHostEnvironment _environment;
         private readonly int _recordsPerPage = 3;
 
-        public ProductsController(ApplicationDbContext db, IWebHostEnvironment environment)
+        public BooksController(ApplicationDbContext db, IWebHostEnvironment environment)
         {
             _db = db;
             _environment = environment;
@@ -54,7 +54,7 @@ namespace HaT7FptBook.Areas.StoreOwner.Controllers
 
             try
             {
-                var products = _db.Products
+                var products = _db.Books
                     .Where(s => s.Title.Contains(searchString) || s.ISBN.Contains(searchString))
                     .Where(a => a.StoreId == storeId.Id)
                     .Include(a => a.Category)
@@ -79,7 +79,7 @@ namespace HaT7FptBook.Areas.StoreOwner.Controllers
                 ViewData["Message"] = "Error: " + e.Message;
             }
 
-            return View(new List<Product>());
+            return View(new List<Book>());
         }
 
         //====================== DELETE ==========================
@@ -87,8 +87,8 @@ namespace HaT7FptBook.Areas.StoreOwner.Controllers
         [Authorize(Roles = SD.Role_StoreOwner)]
         public IActionResult Delete(int? id)
         {
-            var product = _db.Products.Find(id);
-            _db.Products.Remove(product);
+            var product = _db.Books.Find(id);
+            _db.Books.Remove(product);
             _db.SaveChanges();
             return RedirectToAction(nameof(Index));
         }
@@ -127,12 +127,12 @@ namespace HaT7FptBook.Areas.StoreOwner.Controllers
 
             if (id == 0 || id == null)
             {
-                productUpSertVM.Product = new Product();
-                productUpSertVM.Product.StoreId = storeId.Id;
+                productUpSertVM.Book = new Book();
+                productUpSertVM.Book.StoreId = storeId.Id;
                 return View(productUpSertVM);
             }
 
-            productUpSertVM.Product = _db.Products.Find(id);
+            productUpSertVM.Book = _db.Books.Find(id);
             return View(productUpSertVM);
         }
 
@@ -156,13 +156,13 @@ namespace HaT7FptBook.Areas.StoreOwner.Controllers
             var files = HttpContext.Request.Form.Files;
             if (files.Count > 0)
             {
-                string fileName = productUpSertVm.Product.ISBN + "_" + Guid.NewGuid();
+                string fileName = productUpSertVm.Book.ISBN + "_" + Guid.NewGuid();
                 var uploads = Path.Combine(webRootPath, @"images/products");
                 var extension = Path.GetExtension(files[0].FileName);
-                if (productUpSertVm.Product.Id != 0)
+                if (productUpSertVm.Book.Id != 0)
                 {
-                    var productDb = _db.Products.AsNoTracking().Where(a => a.Id == productUpSertVm.Product.Id).First();
-                    if (productDb.ImageUrl != null && productUpSertVm.Product.Id != 0)
+                    var productDb = _db.Books.AsNoTracking().Where(a => a.Id == productUpSertVm.Book.Id).First();
+                    if (productDb.ImageUrl != null && productUpSertVm.Book.Id != 0)
                     {
                         // to edit path so we need to delete the old path and update new one
                         var imagePath = Path.Combine(webRootPath, productDb.ImageUrl.TrimStart('/'));
@@ -187,33 +187,35 @@ namespace HaT7FptBook.Areas.StoreOwner.Controllers
                     files[0].CopyTo(filesStreams);
                 }
 
-                productUpSertVm.Product.ImageUrl = @"/images/products/" + fileName + extension;
+                productUpSertVm.Book.ImageUrl = @"/images/products/" + fileName + extension;
             }
             else
             {
                 //update without change the images
-                if (productUpSertVm.Product.Id != 0)
+                if (productUpSertVm.Book.Id != 0)
                 {
-                    Product objFromDb = _db.Products.AsNoTracking().Where(a => a.Id == productUpSertVm.Product.Id)
+                    Book objFromDb = _db.Books
+                        .AsNoTracking()
+                        .Where(a => a.Id == productUpSertVm.Book.Id)
                         .First();
-                    productUpSertVm.Product.ImageUrl = objFromDb.ImageUrl;
+                    productUpSertVm.Book.ImageUrl = objFromDb.ImageUrl;
                 }
             }
 
-            if (_db.Products.Any(a => a.ISBN.ToLower().Trim() == productUpSertVm.Product.ISBN.ToLower().Trim() && a.Id != productUpSertVm.Product.Id))
+            if (_db.Books.Any(a => a.ISBN.ToLower().Trim() == productUpSertVm.Book.ISBN.ToLower().Trim() && a.Id != productUpSertVm.Book.Id))
             {
                 ViewData["Message"] = "Error: ISBN already exist";
                 productUpSertVm.CategoryList = CategorySelectListItems();
                 return View(productUpSertVm);
             }
             
-            if (productUpSertVm.Product.Id == 0 || productUpSertVm.Product.Id == null)
+            if (productUpSertVm.Book.Id == 0 || productUpSertVm.Book.Id == null)
             {
-                _db.Products.Add(productUpSertVm.Product);
+                _db.Books.Add(productUpSertVm.Book);
             }
             else
             {
-                _db.Products.Update(productUpSertVm.Product);
+                _db.Books.Update(productUpSertVm.Book);
             }
 
             _db.SaveChanges();
@@ -224,7 +226,7 @@ namespace HaT7FptBook.Areas.StoreOwner.Controllers
         [HttpGet]
         public IActionResult Details(int id)
         {
-            var productFromDb = _db.Products
+            var productFromDb = _db.Books
                 .Include(a => a.Category)
                 .FirstOrDefault(a => a.Id == id);
             return View(productFromDb);

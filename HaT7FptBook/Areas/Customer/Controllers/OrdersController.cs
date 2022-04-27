@@ -48,7 +48,7 @@ namespace HaT7FptBook.Areas.Customer.Controllers
         {
             var orderDetails = _db.OderDetails
                 .Where(a => a.OrderHeaderId == orderHeaderId)
-                .Include(a => a.Product)
+                .Include(a => a.Book)
                 .ToList();
             return View(orderDetails);
         }

@@ -11,8 +11,8 @@ namespace HaT7FptBook.Models
         [Required] public int OrderHeaderId { get; set; }
         [ForeignKey("OrderHeaderId")] public OrderHeader OrderHeader { get; set; }
 
-        [Required] public int ProductId { get; set; }
-        [ForeignKey("ProductId")] public Product Product { get; set; }
+        [Required] public int BookId { get; set; }
+        [ForeignKey("BookId")] public Book Book { get; set; }
 
         [Required] public double Price { get; set; }
         [Required] public int Quantity { get; set; }

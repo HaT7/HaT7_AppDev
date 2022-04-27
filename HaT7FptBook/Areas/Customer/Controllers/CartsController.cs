@@ -39,7 +39,7 @@ namespace HaT7FptBook.Areas.Customer.Controllers
             ShoppingCartVM = new ShoppingCartVM()
             {
                 OrderHeader = new Models.OrderHeader(),
-                ListCarts = _db.Carts.Where(u => u.UserId == claim.Value).Include(p => p.Product.Category)
+                ListCarts = _db.Carts.Where(u => u.UserId == claim.Value).Include(p => p.Book.Category)
             };
             
             ShoppingCartVM.OrderHeader.Total = 0;
@@ -48,11 +48,11 @@ namespace HaT7FptBook.Areas.Customer.Controllers
 
             foreach (var list in ShoppingCartVM.ListCarts)
             {
-                list.Price = list.Product.Price;
+                list.Price = list.Book.Price;
                 ShoppingCartVM.OrderHeader.Total += (list.Price * list.Count);
-                if (list.Product.Description.Length > 100)
+                if (list.Book.Description.Length > 100)
                 {
-                    list.Product.Description = list.Product.Description.Substring(0, 99) + "...";
+                    list.Book.Description = list.Book.Description.Substring(0, 99) + "...";
                 }
             }
             return View(ShoppingCartVM);
@@ -60,16 +60,16 @@ namespace HaT7FptBook.Areas.Customer.Controllers
 
         public IActionResult Plus(int cartId)
         {
-            var cart = _db.Carts.Include(p => p.Product).FirstOrDefault(c => c.Id == cartId);
+            var cart = _db.Carts.Include(p => p.Book).FirstOrDefault(c => c.Id == cartId);
             cart.Count += 1;
-            cart.Price = cart.Product.Price;
+            cart.Price = cart.Book.Price;
             _db.SaveChanges();
             return RedirectToAction(nameof(Index));
         }
 
         public IActionResult Minus(int cartId)
         {
-            var cart = _db.Carts.Include(p => p.Product).FirstOrDefault(c => c.Id == cartId);
+            var cart = _db.Carts.Include(p => p.Book).FirstOrDefault(c => c.Id == cartId);
 
             if (cart.Count == 1)
             {
@@ -81,7 +81,7 @@ namespace HaT7FptBook.Areas.Customer.Controllers
             else
             {
                 cart.Count -= 1;
-                cart.Price = cart.Product.Price;
+                cart.Price = cart.Book.Price;
                 _db.SaveChanges();
             }
             return RedirectToAction(nameof(Index));
@@ -89,7 +89,7 @@ namespace HaT7FptBook.Areas.Customer.Controllers
 
         public IActionResult Remove(int cartId)
         {
-            var cart = _db.Carts.Include(p => p.Product).FirstOrDefault(c => c.Id == cartId);
+            var cart = _db.Carts.Include(p => p.Book).FirstOrDefault(c => c.Id == cartId);
 
             var cnt = _db.Carts.Where(u => u.UserId == cart.UserId).ToList().Count;
             _db.Carts.Remove(cart);
@@ -107,7 +107,7 @@ namespace HaT7FptBook.Areas.Customer.Controllers
             ShoppingCartVM = new ShoppingCartVM()
             {
                 OrderHeader = new Models.OrderHeader(),
-                ListCarts = _db.Carts.Where(u => u.UserId == claim.Value).Include(a => a.Product)
+                ListCarts = _db.Carts.Where(u => u.UserId == claim.Value).Include(a => a.Book)
             };
 
             ShoppingCartVM.OrderHeader.ApplicationUser = _db.ApplicationUsers
@@ -115,7 +115,7 @@ namespace HaT7FptBook.Areas.Customer.Controllers
 
             foreach (var list in ShoppingCartVM.ListCarts)
             {
-                list.Price = list.Product.Price;
+                list.Price = list.Book.Price;
                 ShoppingCartVM.OrderHeader.Total += (list.Price * list.Count);
             }
 
@@ -137,7 +137,7 @@ namespace HaT7FptBook.Areas.Customer.Controllers
             var claim = claimsIdentity.FindFirst(ClaimTypes.NameIdentifier);
 
             ShoppingCartVM.OrderHeader.ApplicationUser = _db.ApplicationUsers.FirstOrDefault(c => c.Id == claim.Value);
-            ShoppingCartVM.ListCarts = _db.Carts.Where(c => c.UserId == claim.Value).Include(a => a.Product);
+            ShoppingCartVM.ListCarts = _db.Carts.Where(c => c.UserId == claim.Value).Include(a => a.Book);
 
             ShoppingCartVM.OrderHeader.UserId = claim.Value;
             ShoppingCartVM.OrderHeader.Address = ShoppingCartVM.OrderHeader.ApplicationUser.Address;
@@ -149,10 +149,10 @@ namespace HaT7FptBook.Areas.Customer.Controllers
 
             foreach (var item in ShoppingCartVM.ListCarts)
             {
-                item.Price = item.Product.Price;
+                item.Price = item.Book.Price;
                 OderDetail orderDetails = new OderDetail()
                 {
-                    ProductId = item.ProductId,
+                    BookId = item.BookId,
                     OrderHeaderId = ShoppingCartVM.OrderHeader.Id,
                     Price = item.Price,
                     Quantity = item.Count

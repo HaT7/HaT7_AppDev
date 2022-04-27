@@ -1,15 +1,15 @@
 ﻿@model HaT7FptBook.Models.Cart
 <form method="post">
-    <input hidden asp-for="ProductId"/>
+    <input hidden asp-for="BookId"/>
     <div class="container backgroundWhite">
         <div class="card">
             <div class="card-header bg-light text-light ml-0 row container">
                 <div class="col-12 col-md-6">
-                    <h1 class="text-primary">@Model.Product.Title</h1>
-                    <p class="text-warning">by @Model.Product.Author</p>
+                    <h1 class="text-primary">@Model.Book.Title</h1>
+                    <p class="text-warning">by @Model.Book.Author</p>
                 </div>
                 <div class="col-12 col-md-6 text-md-right pt-4">
-                    <span class="badge badge-warning pt-2" style="height:30px;">@Model.Product.Category.Name</span>
+                    <span class="badge badge-warning pt-2" style="height:30px;">@Model.Book.Category.Name</span>
                 </div>
             </div>
             <div class="card-body">
@@ -22,11 +22,11 @@
                                     <div>Price</div>
                                 </div>
                                 <div class="p-1 col-2 bg-secondary">
-                                    <div>@Model.Product.Price.ToString("C")</div>
+                                    <div>@Model.Book.Price.ToString("C")</div>
                                 </div>
                             </div>
                             <div class="row pl-2">
-                                <p class="text-secondary">@Html.Raw(Model.Product.Description)</p>
+                                <p class="text-secondary">@Html.Raw(Model.Book.Description)</p>
                             </div>
                             <div class="row pl-2">
                                 <div class="col-2 text-primary">
@@ -38,7 +38,7 @@
                             </div>
                         </div>
                         <div class="col-12 col-lg-3 offset-lg-1 text-center">
-                            <img src="@Model.Product.ImageUrl" width="100%" class="rounded"/>
+                            <img src="@Model.Book.ImageUrl" width="100%" class="rounded"/>
                         </div>
                     </div>
                 </div>
