@@ -109,6 +109,11 @@ namespace HaT7FptBook.Areas.Identity.Pages.Account
                         await _userManager.AddToRoleAsync(user, "Customer");
                     }
                     
+                    if (Input.Role == "Admin")
+                    {
+                        await _userManager.AddToRoleAsync(user, "Admin");
+                    }
+                    
                     var code = await _userManager.GenerateEmailConfirmationTokenAsync(user);
                     code = WebEncoders.Base64UrlEncode(Encoding.UTF8.GetBytes(code));
                     var callbackUrl = Url.Page(

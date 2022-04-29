@@ -28,13 +28,6 @@
                             <a class="nav-link text-dark" asp-area="Admin" asp-controller="Users" asp-action="Index">User</a>
                         </li>
                     }
-
-                    @if (User.IsInRole("StoreOwner"))
-                    {
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="StoreOwner" asp-controller="Stores" asp-action="Index">Store</a>
-                        </li>
-                    }
                     
                     @if (User.IsInRole("Customer"))
                     {

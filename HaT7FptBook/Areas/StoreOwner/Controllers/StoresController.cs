@@ -22,7 +22,6 @@ namespace HaT7FptBook.Areas.StoreOwner.Controllers
 
         //======================== INDEX ==========================
         [HttpGet]
-        [Authorize(Roles = SD.Role_StoreOwner)]
         public IActionResult Index()
         {
             var claimIdentity = (ClaimsIdentity) User.Identity;
@@ -30,8 +29,8 @@ namespace HaT7FptBook.Areas.StoreOwner.Controllers
             
             try
             {
-                var storeList = _db.Stores.Where(a=>a.StoreOwnerId == claims.Value).ToList();
-                return View(storeList);
+                var store = _db.Stores.Where(a=>a.StoreOwnerId == claims.Value).ToList();
+                return View(store);
             }
             catch (Exception e)
             {
@@ -44,7 +43,6 @@ namespace HaT7FptBook.Areas.StoreOwner.Controllers
 
         //======================== DELETE ==========================
         [HttpGet]
-        [Authorize(Roles = SD.Role_StoreOwner)]
         public IActionResult Delete(int id)
         {
             var store = _db.Stores.Find(id);
@@ -55,7 +53,6 @@ namespace HaT7FptBook.Areas.StoreOwner.Controllers
         
         //======================== UPSERT ==========================
         [HttpGet]
-        [Authorize(Roles = SD.Role_StoreOwner)]
         public IActionResult UpSert(int? id)
         {
             if (id == 0 || id == null)
@@ -68,7 +65,6 @@ namespace HaT7FptBook.Areas.StoreOwner.Controllers
         }
 
         [HttpPost]
-        [Authorize(Roles = SD.Role_StoreOwner)]
         public IActionResult UpSert([Bind("Id,Name")]Store store)
         {
             var claimIdentity = (ClaimsIdentity) User.Identity;
@@ -83,11 +79,11 @@ namespace HaT7FptBook.Areas.StoreOwner.Controllers
             
             if (store.Id == 0 || store.Id == null)
             {
-                var checkStoreExist = _db.Stores.Any(a=> a.StoreOwnerId == claims.Value);
-                if (checkStoreExist)
-                {
-                    return BadRequest();
-                }
+                // var checkStoreExist = _db.Stores.Any(a=> a.StoreOwnerId == claims.Value);
+                // if (checkStoreExist)
+                // {
+                //     return BadRequest();
+                // }
                 _db.Stores.Add(store);
             }
             else

@@ -23,7 +23,7 @@ namespace HaT7FptBook.Areas.StoreOwner.Controllers
     {
         private readonly ApplicationDbContext _db;
         private readonly IWebHostEnvironment _environment;
-        private readonly int _recordsPerPage = 3;
+        private readonly int _recordsPerPage = 10;
 
         public BooksController(ApplicationDbContext db, IWebHostEnvironment environment)
         {
@@ -33,7 +33,6 @@ namespace HaT7FptBook.Areas.StoreOwner.Controllers
 
         //====================== INDEX ==========================   
         [HttpGet]
-        [Authorize(Roles = SD.Role_StoreOwner)]
         public async Task<IActionResult> Index(int id = 0, string searchString = "")
         {
             var claimIdentity = (ClaimsIdentity) User.Identity;
@@ -45,12 +44,6 @@ namespace HaT7FptBook.Areas.StoreOwner.Controllers
                 ViewData["Message"] = "Error: Store not exist. Let's create your Store and Category first";
                 return RedirectToAction("Index", "Stores", new {area = "StoreOwner"});
             }
-            
-            if (storeId != null && !_db.Categories.Any(a => a.StoreId == storeId.Id))
-            {
-                ViewData["Message"] = "Error: Category not exist. Let's create your Category first";
-                return RedirectToAction("Index", "Categories", new {area = "StoreOwner"});
-            }
 
             try
             {
@@ -58,7 +51,6 @@ namespace HaT7FptBook.Areas.StoreOwner.Controllers
                     .Where(s => s.Title.Contains(searchString) || s.ISBN.Contains(searchString))
                     .Where(a => a.StoreId == storeId.Id)
                     .Include(a => a.Category)
-                    .OrderBy(a => a.CreateAt)
                     .ToList();
                 int numberOfRecords = products.Count();
                 int numberOfPages = (int) Math.Ceiling((double) numberOfRecords / _recordsPerPage);
@@ -84,7 +76,6 @@ namespace HaT7FptBook.Areas.StoreOwner.Controllers
 
         //====================== DELETE ==========================
         [HttpGet]
-        [Authorize(Roles = SD.Role_StoreOwner)]
         public IActionResult Delete(int? id)
         {
             var product = _db.Books.Find(id);
@@ -97,13 +88,12 @@ namespace HaT7FptBook.Areas.StoreOwner.Controllers
         [NonAction]
         private IEnumerable<SelectListItem> CategorySelectListItems()
         {
-            var claimIdentity = (ClaimsIdentity) User.Identity;
-            var claims = claimIdentity.FindFirst(ClaimTypes.NameIdentifier);
+            // var claimIdentity = (ClaimsIdentity) User.Identity;
+            // var claims = claimIdentity.FindFirst(ClaimTypes.NameIdentifier);
+            //
+            // var storeId = _db.Stores.FirstOrDefault(a => a.StoreOwnerId == claims.Value);
 
-            var storeId = _db.Stores.FirstOrDefault(a => a.StoreOwnerId == claims.Value);
-
-            var categoryList = _db.Categories.Where(a => a.StoreId == storeId.Id).ToList();
-
+            var categoryList = _db.Categories.ToList();
             var result = categoryList.Select(category => new SelectListItem
             {
                 Text = category.Name,
@@ -114,7 +104,6 @@ namespace HaT7FptBook.Areas.StoreOwner.Controllers
         }
 
         [HttpGet]
-        [Authorize(Roles = SD.Role_StoreOwner)]
         public IActionResult UpSert(int? id)
         {
             ProductUpSertVM productUpSertVM = new ProductUpSertVM();
@@ -137,7 +126,6 @@ namespace HaT7FptBook.Areas.StoreOwner.Controllers
         }
 
         [HttpPost]
-        [Authorize(Roles = SD.Role_StoreOwner)]
         public IActionResult UpSert(ProductUpSertVM productUpSertVm)
         {
             if (!ModelState.IsValid)
@@ -194,10 +182,7 @@ namespace HaT7FptBook.Areas.StoreOwner.Controllers
                 //update without change the images
                 if (productUpSertVm.Book.Id != 0)
                 {
-                    Book objFromDb = _db.Books
-                        .AsNoTracking()
-                        .Where(a => a.Id == productUpSertVm.Book.Id)
-                        .First();
+                    Book objFromDb = _db.Books.AsNoTracking().Where(a => a.Id == productUpSertVm.Book.Id).First();
                     productUpSertVm.Book.ImageUrl = objFromDb.ImageUrl;
                 }
             }

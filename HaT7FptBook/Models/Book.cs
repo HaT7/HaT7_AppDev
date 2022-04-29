@@ -20,13 +20,7 @@ namespace HaT7FptBook.Models
         [DataType(DataType.Currency)]
         [Required]
         public double Price { get; set; }
-        [Required] public string ImageUrl { get; set; }
+        public string ImageUrl { get; set; }
         [Required] public string ISBN { get; set; }
-        public DateTime CreateAt { get; set; }
-
-        public Book()
-        {
-            CreateAt = DateTime.Now;
-        }
     }
 }

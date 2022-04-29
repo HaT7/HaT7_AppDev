@@ -20,7 +20,7 @@ namespace HaT7FptBook.Areas.Customer.Controllers
     {
         private readonly ILogger<HomeController> _logger;
         private readonly ApplicationDbContext _db;
-        private readonly int _recordsPerPage = 2;
+        private readonly int _recordsPerPage = 20;
 
         public HomeController(ILogger<HomeController> logger, ApplicationDbContext db)
         {
