@@ -5,11 +5,13 @@ using System.Security.Claims;
 using System.Text;
 using System.Text.Encodings.Web;
 using System.Threading.Tasks;
+using HaT7FptBook.Areas.Identity.Pages.Account;
 using HaT7FptBook.Data;
 using HaT7FptBook.Models;
 using HaT7FptBook.ViewModels;
 using HaT7FptBook.Utility;
 using HaT7FptBook.ViewModels;
+using MailKit.Security;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
@@ -18,6 +20,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.WebUtilities;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
+using MimeKit;
 
 namespace HaT7FptBook.Areas.Customer.Controllers
 {
@@ -26,9 +29,11 @@ namespace HaT7FptBook.Areas.Customer.Controllers
     public class CartsController : Controller
     {
         private readonly ApplicationDbContext _db;
-        public CartsController(ApplicationDbContext db)
+        private readonly ISendMailService _emailSender;
+        public CartsController(ApplicationDbContext db, ISendMailService emailSender)
         {
             _db = db;
+            _emailSender = emailSender;
         }
         [BindProperty] public ShoppingCartVM ShoppingCartVM { get; set; }
         public IActionResult Index()
@@ -168,9 +173,20 @@ namespace HaT7FptBook.Areas.Customer.Controllers
 
             return RedirectToAction("OrderConfirmation", "Carts", new {id = ShoppingCartVM.OrderHeader.Id});
         }
-
+        
         public IActionResult OrderConfirmation(int id)
         {
+            var claimsIdentity = (ClaimsIdentity) User.Identity;
+            var claim = claimsIdentity.FindFirst(ClaimTypes.NameIdentifier);
+            var emaildb = _db.ApplicationUsers.Find(claim.Value).Email;
+            
+            MailContent content = new MailContent {
+                To = emaildb,
+                Subject = "Tks to Order",
+                Body = "<p>Your Order Successfully</p>"
+            };
+
+            _emailSender.SendMail(content);
             return View(id);
         }
     }

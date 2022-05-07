@@ -15,7 +15,8 @@
 
     <div class="form-group">
         <label>Image</label>
-        <input type="file" name="files" multiple class="form-control">
+        <input type="file" name="files" multiple class="form-control" value="@Model.Book.ImageUrl">
+        <span asp-validation-for="Book.ImageUrl" class="text-danger"></span>
     </div>
 
     <div class="row justify-content-center">
@@ -59,7 +60,7 @@
     </div>
 
     <div class="form-group">
-        <label asp-for="Book.CategoryId"></label>
+        <label asp-for="Book.CategoryId">Category</label>
         @Html.DropDownListFor(a => a.Book.CategoryId, Model.CategoryList, "-Select Category", new {@class = "form-control"})
         <span asp-validation-for="Book.CategoryId" class="text-danger"></span>
     </div>

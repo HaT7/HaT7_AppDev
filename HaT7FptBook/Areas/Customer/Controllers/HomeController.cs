@@ -119,6 +119,11 @@ namespace HaT7FptBook.Areas.Customer.Controllers
             }
         }
 
+        // ============ HELP ================
+        public IActionResult Help()
+        {
+            return View();
+        }
         public IActionResult Privacy()
         {
             return View();

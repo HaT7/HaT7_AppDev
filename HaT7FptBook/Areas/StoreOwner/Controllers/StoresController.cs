@@ -94,5 +94,11 @@ namespace HaT7FptBook.Areas.StoreOwner.Controllers
             _db.SaveChanges();
             return RedirectToAction(nameof(Index));
         }
+        
+        //======================== UPSERT ==========================
+        public IActionResult Help()
+        {
+            return View();
+        }
     }
 }

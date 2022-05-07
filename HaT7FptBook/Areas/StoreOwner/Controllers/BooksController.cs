@@ -39,11 +39,11 @@ namespace HaT7FptBook.Areas.StoreOwner.Controllers
             var claims = claimIdentity.FindFirst(ClaimTypes.NameIdentifier);
             var storeId = _db.Stores.FirstOrDefault(a => a.StoreOwnerId == claims.Value);
 
-            if (storeId == null)
-            {
-                ViewData["Message"] = "Error: Store not exist. Let's create your Store and Category first";
-                return RedirectToAction("Index", "Stores", new {area = "StoreOwner"});
-            }
+            // if (storeId == null)
+            // {
+            //     ViewData["Message"] = "Error: Store not exist. Let's create your Store and Category first";
+            //     return RedirectToAction("Index", "Stores", new {area = "StoreOwner"});
+            // }
 
             try
             {
@@ -170,7 +170,8 @@ namespace HaT7FptBook.Areas.StoreOwner.Controllers
                 // ngoài ta gọi nó là ghi stream.
 
                 // FileMode.Create để tạo mới một file để lưu, nếu file đó đã tồn tại thì nó sẽ ghi đè lên
-                using (var filesStreams = new FileStream(Path.Combine(uploads, fileName + extension), FileMode.Create))
+                using (var filesStreams =
+                       new FileStream(Path.Combine(uploads, fileName + extension), FileMode.Create))
                 {
                     files[0].CopyTo(filesStreams);
                 }
@@ -179,21 +180,27 @@ namespace HaT7FptBook.Areas.StoreOwner.Controllers
             }
             else
             {
-                //update without change the images
-                if (productUpSertVm.Book.Id != 0)
-                {
-                    Book objFromDb = _db.Books.AsNoTracking().Where(a => a.Id == productUpSertVm.Book.Id).First();
-                    productUpSertVm.Book.ImageUrl = objFromDb.ImageUrl;
-                }
+                ViewData["Message"] = "Error: Please choose an image";
+                productUpSertVm.CategoryList = CategorySelectListItems();
+                return View(productUpSertVm);
             }
-
-            if (_db.Books.Any(a => a.ISBN.ToLower().Trim() == productUpSertVm.Book.ISBN.ToLower().Trim() && a.Id != productUpSertVm.Book.Id))
+            
+            //update without change the images
+            // if (productUpSertVm.Book.Id != 0)
+            // {
+            //     Book objFromDb = _db.Books.AsNoTracking().Where(a => a.Id == productUpSertVm.Book.Id).First();
+            //     productUpSertVm.Book.ImageUrl = objFromDb.ImageUrl;
+            // }
+            
+            if (_db.Books.Any(a =>
+                    a.ISBN.ToLower().Trim() == productUpSertVm.Book.ISBN.ToLower().Trim() &&
+                    a.Id != productUpSertVm.Book.Id))
             {
                 ViewData["Message"] = "Error: ISBN already exist";
                 productUpSertVm.CategoryList = CategorySelectListItems();
                 return View(productUpSertVm);
             }
-            
+
             if (productUpSertVm.Book.Id == 0 || productUpSertVm.Book.Id == null)
             {
                 _db.Books.Add(productUpSertVm.Book);

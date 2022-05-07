@@ -18,7 +18,6 @@
             <div class="row mb-2">
                 <div class="col-3">
                     <h5>View order information</h5>
-                    <p>Hiện tại đang có: </p>
                 </div>
 
                 <div class="col">
@@ -53,6 +52,16 @@
 
                 <div class="col">
                     <a class="btn btn-info" asp-controller="Stores" asp-action="UpSert" asp-route-id="@store.Id">Edit</a>
+                </div>
+            </div>
+
+            <div class="row mb-2">
+                <div class="col-3">
+                    <h5>Do you need some help?</h5>
+                </div>
+
+                <div class="col">
+                    <a class="btn btn-info" asp-area="StoreOwner" asp-controller="Stores" asp-action="Help">Help</a>
                 </div>
             </div>
         </div>

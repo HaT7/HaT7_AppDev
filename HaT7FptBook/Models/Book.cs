@@ -16,7 +16,7 @@ namespace HaT7FptBook.Models
         [Required] public string Author { get; set; }
         [Required] public int NoPage { get; set; }
 
-        [Range(1000, 100000000)]
+        [Range(10, 10000)]
         [DataType(DataType.Currency)]
         [Required]
         public double Price { get; set; }
