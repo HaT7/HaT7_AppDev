@@ -95,7 +95,7 @@ namespace HaT7FptBook.Areas.StoreOwner.Controllers
             return RedirectToAction(nameof(Index));
         }
         
-        //======================== UPSERT ==========================
+        //======================== HELP ==========================
         public IActionResult Help()
         {
             return View();
