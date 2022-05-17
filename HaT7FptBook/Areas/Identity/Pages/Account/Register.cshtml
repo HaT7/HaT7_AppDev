@@ -2,86 +2,182 @@
 @model RegisterModel
 @{
     ViewData["Title"] = "Register";
+    Layout = "_LoginLayout.cshtml";
 }
 
-<h1>@ViewData["Title"]</h1>
+<style>
+    .bg-register-image {
+        background-image: url("data:image/png;base64,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");
+        background-position: center;
+        background-repeat: no-repeat;
+        background-size: contain;
+        background-color: #fff;
+    }
+    
+    .p-5 {
+        background-color: #ede9e9;
+    }
+</style>
 
-<div class="row">
-    <div class="col-md-4">
-        <form asp-route-returnUrl="@Model.ReturnUrl" method="post">
-            <h4>Create a new account.</h4>
-            <hr/>
-            <div asp-validation-summary="All" class="text-danger"></div>
-            <div class="form-group">
-                <label asp-for="Input.Email"></label>
-                <input asp-for="Input.Email" class="form-control"/>
-                <span asp-validation-for="Input.Email" class="text-danger"></span>
-            </div>
-
-            <div class="form-group">
-                <label asp-for="Input.FullName"></label>
-                <input asp-for="Input.FullName" class="form-control"/>
-                <span asp-validation-for="Input.FullName" class="text-danger"></span>
-            </div>
-
-            <div class="form-group">
-                <label asp-for="Input.Password"></label>
-                <input asp-for="Input.Password" class="form-control"/>
-                <span asp-validation-for="Input.Password" class="text-danger"></span>
-            </div>
-
-            <div class="form-group">
-                <label asp-for="Input.ConfirmPassword"></label>
-                <input asp-for="Input.ConfirmPassword" class="form-control"/>
-                <span asp-validation-for="Input.ConfirmPassword" class="text-danger"></span>
-            </div>
-
-            <div class="form-group">
-                <label asp-for="Input.Address"></label>
-                <input asp-for="Input.Address" class="form-control"/>
-                <span asp-validation-for="Input.Address" class="text-danger"></span>
-            </div>
-
-            <div class="form-group">
-                <label asp-for="Input.Role"></label>
-                @Html.DropDownListFor(a => a.Input.Role, Model.Input.RoleList, "-Select Role", new {@class = "form-control"})
-                <span asp-validation-for="Input.Role" class="text-danger"></span>
-            </div>
-
-            <button type="submit" class="btn btn-primary">Register</button>
-        </form>
-    </div>
-    <div class="col-md-6 col-md-offset-2">
-        <section>
-            <h4>Use another service to register.</h4>
-            <hr/>
-            @{
-                if ((Model.ExternalLogins?.Count ?? 0) == 0)
-                {
-                    <div>
-                        <p>
-                            There are no external authentication services configured. See <a href="https://go.microsoft.com/fwlink/?LinkID=532715">this article</a>
-                            for details on setting up this ASP.NET application to support logging in via external services.
-                        </p>
+<div class="card o-hidden border-0 shadow-lg my-5">
+    <div class="card-body p-0">
+        <!-- Nested Row within Card Body -->
+        <div class="row">
+            <div class="col-lg-5 d-none d-lg-block bg-register-image"></div>
+            <div class="col-lg-7">
+                <div class="p-5">
+                    <div class="text-center">
+                        <h1 class="h4 text-gray-900 mb-4">Create a new account</h1>
                     </div>
-                }
-                else
-                {
-                    <form id="external-account" asp-page="./ExternalLogin" asp-route-returnUrl="@Model.ReturnUrl" method="post" class="form-horizontal">
-                        <div>
-                            <p>
-                                @foreach (var provider in Model.ExternalLogins)
-                                {
-                                    <button type="submit" class="btn btn-primary" name="provider" value="@provider.Name" title="Log in using your @provider.DisplayName account">@provider.DisplayName</button>
-                                }
-                            </p>
+                    <form class="user" asp-route-returnUrl="@Model.ReturnUrl" method="post">
+                        <div asp-validation-summary="All" class="text-danger"></div>
+                        <div class="form-group">
+                            <input asp-for="Input.Email"
+                                   type="email"
+                                   class="form-control form-control-user"
+                                   id="exampleInputEmail"
+                                   placeholder="Email Address">
+                            <span asp-validation-for="Input.Email" class="text-danger"></span>
                         </div>
+
+                        <div class="form-group">
+                            <input asp-for="Input.FullName"
+                                   type="text"
+                                   class="form-control form-control-user"
+                                   id="exampleFirstName"
+                                   placeholder="Full Name">
+                            <span asp-validation-for="Input.FullName" class="text-danger"></span>
+                        </div>
+
+                        <div class="form-group">
+                            <input asp-for="Input.Password"
+                                   type="password"
+                                   class="form-control form-control-user"
+                                   id="exampleInputPassword"
+                                   placeholder="Password">
+                            <span asp-validation-for="Input.Password" class="text-danger"></span>
+                        </div>
+
+                        <div class="form-group">
+                            <input asp-for="Input.ConfirmPassword"
+                                   type="password"
+                                   class="form-control form-control-user"
+                                   id="exampleRepeatPassword"
+                                   placeholder="Confirm Password">
+                            <span asp-validation-for="Input.ConfirmPassword" class="text-danger"></span>
+                        </div>
+
+                        <div class="form-group">
+                            <input asp-for="Input.Address"
+                                   class="form-control form-control-user"
+                                   placeholder="Address">
+                            <span asp-validation-for="Input.Address" class="text-danger"></span>
+                        </div>
+
+                        <button type="submit" class="btn btn-primary btn-user btn-block">Register</button>
+
+                        @* <hr> *@
+                        @* <a href="index.html" class="btn btn-google btn-user btn-block"> *@
+                        @*     <i class="fab fa-google fa-fw"></i> Register with Google *@
+                        @* </a> *@
+                        @* <a href="index.html" class="btn btn-facebook btn-user btn-block"> *@
+                        @*     <i class="fab fa-facebook-f fa-fw"></i> Register with Facebook *@
+                        @* </a> *@
                     </form>
-                }
-            }
-        </section>
+                    <hr>
+                    <div class="text-center">
+                        <a class="small" asp-page="./ForgotPassword" asp-route-returnUrl="@Model.ReturnUrl">Forgot Password?</a>
+                    </div>
+                    <div class="text-center">
+                        <a class="small" asp-page="./Login" asp-route-returnUrl="@Model.ReturnUrl">Already have an account? Login!</a>
+                    </div>
+                    <div class="text-center">
+                        <a class="small" asp-area="Customer" asp-controller="Home" asp-action="Index" asp-route-returnUrl="@Model.ReturnUrl">Return Home Screen</a>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
 </div>
+
+@* <h1>@ViewData["Title"]</h1> *@
+@* *@
+@* <div class="row"> *@
+@*     <div class="col-md-4"> *@
+@*         <form asp-route-returnUrl="@Model.ReturnUrl" method="post"> *@
+@*             <h4>Create a new account.</h4> *@
+@*             <hr/> *@
+@*             <div asp-validation-summary="All" class="text-danger"></div> *@
+@*             <div class="form-group"> *@
+@*                 <label asp-for="Input.Email"></label> *@
+@*                 <input asp-for="Input.Email" class="form-control"/> *@
+@*                 <span asp-validation-for="Input.Email" class="text-danger"></span> *@
+@*             </div> *@
+@* *@
+@*             <div class="form-group"> *@
+@*                 <label asp-for="Input.FullName"></label> *@
+@*                 <input asp-for="Input.FullName" class="form-control"/> *@
+@*                 <span asp-validation-for="Input.FullName" class="text-danger"></span> *@
+@*             </div> *@
+@* *@
+@*             <div class="form-group"> *@
+@*                 <label asp-for="Input.Password"></label> *@
+@*                 <input asp-for="Input.Password" class="form-control"/> *@
+@*                 <span asp-validation-for="Input.Password" class="text-danger"></span> *@
+@*             </div> *@
+@* *@
+@*             <div class="form-group"> *@
+@*                 <label asp-for="Input.ConfirmPassword"></label> *@
+@*                 <input asp-for="Input.ConfirmPassword" class="form-control"/> *@
+@*                 <span asp-validation-for="Input.ConfirmPassword" class="text-danger"></span> *@
+@*             </div> *@
+@* *@
+@*             <div class="form-group"> *@
+@*                 <label asp-for="Input.Address"></label> *@
+@*                 <input asp-for="Input.Address" class="form-control"/> *@
+@*                 <span asp-validation-for="Input.Address" class="text-danger"></span> *@
+@*             </div> *@
+@* *@
+@*             <div class="form-group"> *@
+@*                 <label asp-for="Input.Role"></label> *@
+@*                 @Html.DropDownListFor(a => a.Input.Role, Model.Input.RoleList, "-Select Role", new {@class = "form-control"}) *@
+@*                 <span asp-validation-for="Input.Role" class="text-danger"></span> *@
+@*             </div> *@
+@* *@
+@*             <button type="submit" class="btn btn-primary">Register</button> *@
+@*         </form> *@
+@*     </div> *@
+@*     <div class="col-md-6 col-md-offset-2"> *@
+@*         <section> *@
+@*             <h4>Use another service to register.</h4> *@
+@*             <hr/> *@
+@*             @{ *@
+@*                 if ((Model.ExternalLogins?.Count ?? 0) == 0) *@
+@*                 { *@
+@*                     <div> *@
+@*                         <p> *@
+@*                             There are no external authentication services configured. See <a href="https://go.microsoft.com/fwlink/?LinkID=532715">this article</a> *@
+@*                             for details on setting up this ASP.NET application to support logging in via external services. *@
+@*                         </p> *@
+@*                     </div> *@
+@*                 } *@
+@*                 else *@
+@*                 { *@
+@*                     <form id="external-account" asp-page="./ExternalLogin" asp-route-returnUrl="@Model.ReturnUrl" method="post" class="form-horizontal"> *@
+@*                         <div> *@
+@*                             <p> *@
+@*                                 @foreach (var provider in Model.ExternalLogins) *@
+@*                                 { *@
+@*                                     <button type="submit" class="btn btn-primary" name="provider" value="@provider.Name" title="Log in using your @provider.DisplayName account">@provider.DisplayName</button> *@
+@*                                 } *@
+@*                             </p> *@
+@*                         </div> *@
+@*                     </form> *@
+@*                 } *@
+@*             } *@
+@*         </section> *@
+@*     </div> *@
+@* </div> *@
 
 @section Scripts {
     <partial name="_ValidationScriptsPartial"/>

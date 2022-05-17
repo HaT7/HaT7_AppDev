@@ -68,14 +68,14 @@ namespace HaT7FptBook.Areas.Identity.Pages.Account
             public string ConfirmPassword { get; set; }
             [Required] public string FullName { get; set; }
             [Required] public string Address { get; set; }
-            [Required] public string Role { get; set; }
-            public IEnumerable<SelectListItem> RoleList { get; set; }
+            // [Required] public string Role { get; set; }
+            // public IEnumerable<SelectListItem> RoleList { get; set; }
         }
 
         public async Task OnGetAsync(string returnUrl = null)
         {
             ReturnUrl = returnUrl;
-            GetRole();
+            // GetRole();
             ExternalLogins = (await _signInManager.GetExternalAuthenticationSchemesAsync()).ToList();
         }
 
@@ -99,20 +99,22 @@ namespace HaT7FptBook.Areas.Identity.Pages.Account
                 {
                     _logger.LogInformation("User created a new account with password.");
 
-                    if (Input.Role == "StoreOwner")
-                    {
-                        await _userManager.AddToRoleAsync(user, "StoreOwner");
-                    }
-                    
-                    if (Input.Role == "Customer")
-                    {
-                        await _userManager.AddToRoleAsync(user, "Customer");
-                    }
-                    
-                    if (Input.Role == "Admin")
-                    {
-                        await _userManager.AddToRoleAsync(user, "Admin");
-                    }
+                    // if (Input.Role == "StoreOwner")
+                    // {
+                    //     await _userManager.AddToRoleAsync(user, "StoreOwner");
+                    // }
+                    //
+                    // if (Input.Role == "Customer")
+                    // {
+                    //     await _userManager.AddToRoleAsync(user, "Customer");
+                    // }
+                    //
+                    // if (Input.Role == "Admin")
+                    // {
+                    //     await _userManager.AddToRoleAsync(user, "Admin");
+                    // }
+
+                    await _userManager.AddToRoleAsync(user, "Customer");
                     
                     var code = await _userManager.GenerateEmailConfirmationTokenAsync(user);
                     code = WebEncoders.Base64UrlEncode(Encoding.UTF8.GetBytes(code));
@@ -143,24 +145,24 @@ namespace HaT7FptBook.Areas.Identity.Pages.Account
                 }
             }
 
-            GetRole();
+            // GetRole();
             // If we got this far, something failed, redisplay form
             return Page();
         }
         
         //Tạo ra một cái metheod là GetRole để khi xảy ra lỗi sẽ lấy lại các dữ liệu để hiển thị ra lại
-        private void GetRole()
-        {
-            Input = new InputModel()
-            {
-                //Mình sẽ lấy hết cái role ra, trong đó mình chọn thằng role name, mỗi thằng role name sẽ tạo
-                //ra một cái SelectListItem
-                RoleList = _roleManager.Roles.Where(a=> a.Name != "Admin").Select(a => a.Name).Select(a => new SelectListItem
-                {
-                    Text = a,
-                    Value = a
-                })
-            };
-        }
+        // private void GetRole()
+        // {
+        //     Input = new InputModel()
+        //     {
+        //         //Mình sẽ lấy hết cái role ra, trong đó mình chọn thằng role name, mỗi thằng role name sẽ tạo
+        //         //ra một cái SelectListItem
+        //         RoleList = _roleManager.Roles.Where(a=> a.Name != "Admin").Select(a => a.Name).Select(a => new SelectListItem
+        //         {
+        //             Text = a,
+        //             Value = a
+        //         })
+        //     };
+        // }
     }
 }
