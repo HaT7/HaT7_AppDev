@@ -1,14 +1,16 @@
 ﻿@model HaT7FptBook.Models.Store
+@using HaT7FptBook.Menu
+@inject AdminSidebarService _AdminSidebarService
 
 @{
     ViewBag.Title = "Store";
-    Layout = "_Layout";
+    Layout =  "/Views/Shared/_LayoutStoreOwner.cshtml";
     var title = Model.Id == 0 ? "Create Store" : "Edit Store";
 }
 
-<h2>@title</h2>
+<h2 class="text-center">@title</h2>
 
-@if ( Model.Id == 0)
+@if (Model.Id == 0)
 {
     <form method="post">
         <partial name="_StatusMessenger" model="@ViewData["Message"]"/>
@@ -57,4 +59,9 @@ else
             <a asp-controller="Stores" asp-action="Delete" asp-route-id="@Model.Id" class="btn btn-danger" onclick="return confirm('Do you want delete this item?')">Delete</a>
         </div>
     </div> 
+}
+
+@section Sidebar
+{
+    @Html.Raw(_AdminSidebarService.renderHtml())
 }

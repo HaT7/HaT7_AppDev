@@ -1,13 +1,16 @@
-﻿@{
-    ViewBag.Title = "Store";
-    Layout = "_Layout";
+﻿@using HaT7FptBook.Menu
+@inject AdminSidebarService _AdminSidebarService
+
+@{
+    Layout =  "/Views/Shared/_LayoutStoreOwner.cshtml";
+    ViewData["Title"] = "Help Screen";
 }
 
 <!DOCTYPE html>
 
 <html>
 <head>
-    <h1 class="mb-3 text-center">Help Screen</h1>
+    @* <h1 class="mb-3 text-center">Help Screen</h1> *@
 </head>
 <body>
 <div class="dropdown mb-3">
@@ -67,3 +70,12 @@
 </div>
 </body>
 </html>
+
+@{
+    _AdminSidebarService.SetActive("Stores", "Help", "StoreOwner");
+}
+
+@section Sidebar
+{
+    @Html.Raw(_AdminSidebarService.renderHtml())
+}

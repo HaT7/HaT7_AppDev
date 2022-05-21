@@ -4,12 +4,14 @@ using System.IO;
 using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
+using ExcelDataReader;
 using HaT7FptBook.Data;
 using HaT7FptBook.Models;
 using HaT7FptBook.Utility;
 using HaT7FptBook.ViewModels;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
@@ -212,6 +214,55 @@ namespace HaT7FptBook.Areas.StoreOwner.Controllers
 
             _db.SaveChanges();
             return RedirectToAction(nameof(Index));
+        }
+        
+        //==================== UPLOAD EXCEL ========================
+        [HttpPost]
+        public IActionResult UploadExcel(IFormFile file)
+        {
+            if (file != null)
+            {
+                //create folder
+                var path = Path.Combine(_environment.WebRootPath, "Uploads");
+                // check if folder is existed if not then create new one
+                if (!Directory.Exists(path))
+                {
+                    Directory.CreateDirectory(path);
+                }
+
+                string fileName = Path.GetFileName(file.FileName);;
+                string filePath = Path.Combine(path, fileName);
+                // store file
+                using (FileStream stream = new FileStream(filePath, FileMode.Create))
+                {
+                    file.CopyTo(stream);
+                }
+
+                using var streamFile = System.IO.File.Open(filePath, FileMode.Open, FileAccess.Read);
+                using var reader = ExcelReaderFactory.CreateReader(streamFile);
+                while (reader.Read())
+                {
+                    var book = new Book()
+                    {
+                        ImageUrl = reader.GetValue(0).ToString(),
+                        ISBN = reader.GetValue(1).ToString(),
+                        Title = reader.GetValue(2).ToString(),
+                        Description = reader.GetValue(3).ToString(),
+                        Author = reader.GetValue(4).ToString(),
+                        NoPage = reader.GetValue(5).GetHashCode(),
+                        Price = (double)reader.GetValue(6),
+                        // CategoryId = reader.GetValue(7).ToString().Where(a => _db.Categories.Find().Id)
+                    };
+
+                    _db.Books.Add(book);
+                }
+
+                _db.SaveChanges();
+                return RedirectToAction("Index");
+            }
+
+            ViewData["Message"] = "Please choose file"; 
+            return RedirectToAction(nameof(UpSert));
         }
 
         // ================= DETAIL ===================

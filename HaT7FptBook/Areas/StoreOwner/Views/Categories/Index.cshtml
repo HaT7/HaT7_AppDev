@@ -1,13 +1,14 @@
 ﻿@model IList<HaT7FptBook.Models.Category>
+@using HaT7FptBook.Menu
+@inject AdminSidebarService _AdminSidebarService
 
 @{
-    ViewBag.Title = "View all Category";
-    Layout = "_Layout";
+    ViewBag.Title = "Category List";
+    Layout =  "/Views/Shared/_LayoutStoreOwner.cshtml";
 }
 
 @if (Model.Any())
 {
-    <h2 class="text-center">List Category</h2>
     <partial name="_StatusMessenger" model="@ViewData["Message"]"/>
     <form asp-action="Index" method="get">
         <div class="d-flex flex-row justify-content-between mt-3 mb-1">
@@ -27,11 +28,6 @@
         </div>
     </form>
 
-    <form asp-controller="Categories" asp-action="UploadExcel" method="post" enctype="multipart/form-data" asp-antiforgery="false">
-        <input type="file" name="file"/>
-        <input type="submit" value="Submit" class="btn btn-success">
-    </form>
-    
     <table style="width: 100%">
         <thead>
         <tr>
@@ -81,6 +77,14 @@ else
     <partial name="_StatusMessenger" model="@ViewData["Message"]"/>
 }
 
+@{
+    _AdminSidebarService.SetActive("Categories", "Index", "StoreOwner");
+}
+
+@section Sidebar
+{
+    @Html.Raw(_AdminSidebarService.renderHtml())
+}
 @* <script> *@
 @*         function InvalidMsg(textbox) { *@
 @* *@

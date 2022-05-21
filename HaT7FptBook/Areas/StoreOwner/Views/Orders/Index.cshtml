@@ -1,13 +1,14 @@
 ﻿@model IList<HaT7FptBook.Models.OrderHeader>
+@using HaT7FptBook.Menu
+@inject AdminSidebarService _AdminSidebarService
 
 @{
-    ViewBag.Title = "View all Order";
-    Layout = "_Layout";
+    Layout =  "/Views/Shared/_LayoutStoreOwner.cshtml";
+    ViewData["Title"] = "Order List";
 }
 
 @if (Model.Any())
 {
-    <h2 class="text-center">List Order</h2>
     <form asp-action="Index" method="get">
         <div class="d-flex flex-row mb-3">
             <input
@@ -67,4 +68,13 @@ else
 {
     <h2 class="text-center">No Value Order</h2>
     <partial name="_StatusMessenger" model="@ViewData["Message"]"/>
+}
+
+@{
+    _AdminSidebarService.SetActive("Orders", "Index", "StoreOwner");
+}
+
+@section Sidebar
+{
+    @Html.Raw(_AdminSidebarService.renderHtml())
 }

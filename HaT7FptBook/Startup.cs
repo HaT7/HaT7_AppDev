@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using HaT7FptBook.Menu;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.UI;
@@ -10,7 +11,9 @@ using Microsoft.AspNetCore.HttpsPolicy;
 using Microsoft.EntityFrameworkCore;
 using HaT7FptBook.Data;
 using HaT7FptBook.Initializer;
+using HaT7FptBook.Menu;
 using HaT7FptBook.Utility;
+using Microsoft.AspNetCore.Mvc.Infrastructure;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
@@ -61,6 +64,9 @@ namespace HaT7FptBook
                 options.Cookie.HttpOnly = true;
                 options.Cookie.IsEssential = true;
             });
+            
+            services.AddTransient<IActionContextAccessor, ActionContextAccessor>();
+            services.AddTransient<AdminSidebarService>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

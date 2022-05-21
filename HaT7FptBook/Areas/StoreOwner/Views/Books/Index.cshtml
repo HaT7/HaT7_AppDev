@@ -1,8 +1,11 @@
 ﻿@model IList<HaT7FptBook.Models.Book>
+@using HaT7FptBook.Menu
+@inject AdminSidebarService _AdminSidebarService
 
 @{
-    ViewBag.Title = "View all Product";
-    Layout = "_Layout";
+    ViewBag.Title = "Books List";
+    Layout =  "/Views/Shared/_LayoutStoreOwner.cshtml";
+
 }
 
 @* <form class="form-inline my-2 my-lg-0 float-right"> *@
@@ -11,11 +14,10 @@
 
 @if (Model.Any())
 {
-    <h2 class="text-center">List Product</h2>
     <form asp-action="Index" method="get">
         <div class="d-flex flex-row justify-content-between mt-3">
             <div>
-                <a asp-controller="Books" asp-action="UpSert" class="btn btn-primary">Create new product</a>
+                <a asp-controller="Books" asp-action="UpSert" class="btn btn-primary">Create new Book</a>
             </div>
 
             <div class="d-flex">
@@ -85,11 +87,20 @@
 }
 else
 {
-    <h2 class="text-center">No Value Product</h2>
+    <h2 class="text-center">No Value Book</h2>
     <div class="text-center">
-        <a asp-controller="Books" asp-action="UpSert" class="btn btn-primary">Create new Product</a>
+        <a asp-controller="Books" asp-action="UpSert" class="btn btn-primary">Create new Book</a>
     </div>
     <partial name="_StatusMessenger" model="@ViewData["Message"]"/>
+}
+
+@{
+    _AdminSidebarService.SetActive("Books", "Index", "StoreOwner");
+}
+
+@section Sidebar
+{
+    @Html.Raw(_AdminSidebarService.renderHtml())
 }
 
 @* <script> *@

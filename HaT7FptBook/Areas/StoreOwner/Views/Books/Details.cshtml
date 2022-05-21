@@ -1,4 +1,12 @@
 ﻿@model HaT7FptBook.Models.Book
+@using HaT7FptBook.Menu
+@inject AdminSidebarService _AdminSidebarService
+
+@{
+    Layout =  "/Views/Shared/_LayoutStoreOwner.cshtml";
+    ViewData["Title"] = "Book Detail";
+}
+
 <form method="post">
     <input hidden asp-for="Id"/>
     <div class="container backgroundWhite">
@@ -45,3 +53,12 @@
         </div>
     </div>
 </form>
+
+@{
+    _AdminSidebarService.SetActive("Books", "Index", "StoreOwner");
+}
+
+@section Sidebar
+{
+    @Html.Raw(_AdminSidebarService.renderHtml())
+}

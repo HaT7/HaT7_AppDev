@@ -1,12 +1,11 @@
 ﻿@model IEnumerable<HaT7FptBook.Models.OderDetail>
+@using HaT7FptBook.Menu
+@inject AdminSidebarService _AdminSidebarService
 
 @{
-    ViewBag.Title = "View all Order";
-    Layout = "_Layout";
+    Layout =  "/Views/Shared/_LayoutStoreOwner.cshtml";
+    ViewData["Title"] = "Order Detail";
 }
-
-
-<h2 class="text-center">Order Details</h2>
 
 <table style="width: 100%">
     <thead>
@@ -47,3 +46,12 @@
         <td>Total: @sum</td>
     </tr>
 </table>
+
+@{
+    _AdminSidebarService.SetActive("Orders", "Index", "StoreOwner");
+}
+
+@section Sidebar
+{
+    @Html.Raw(_AdminSidebarService.renderHtml())
+}

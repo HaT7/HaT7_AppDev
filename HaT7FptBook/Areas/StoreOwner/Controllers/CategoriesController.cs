@@ -156,10 +156,10 @@ namespace HaT7FptBook.Areas.StoreOwner.Controllers
 
                  _db.SaveChanges();
                  return RedirectToAction("Index");
-
              }
 
-             return RedirectToAction("Index");
+             ViewData["Message"] = "Please choose file"; 
+             return RedirectToAction(nameof(UpSert));
          }
     }
 }

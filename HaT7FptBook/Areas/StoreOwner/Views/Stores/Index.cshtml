@@ -1,4 +1,6 @@
 ﻿@model IList<HaT7FptBook.Models.Store>
+@using HaT7FptBook.Menu
+@inject AdminSidebarService _AdminSidebarService
 
 @{
     Layout =  "/Views/Shared/_LayoutStoreOwner.cshtml";
@@ -73,4 +75,13 @@ else
     <div class="text-center">
         <a asp-controller="Stores" asp-action="UpSert" class="btn btn-primary">Create new Store</a>
     </div>
+}
+
+@{
+    _AdminSidebarService.SetActive("Stores", "Index", "StoreOwner");
+}
+
+@section Sidebar
+{
+    @Html.Raw(_AdminSidebarService.renderHtml())
 }

@@ -1,12 +1,16 @@
-﻿@{
-    Layout = "/Views/Shared/_Layout.cshtml";
+﻿@using HaT7FptBook.Menu
+@inject AdminSidebarService _AdminSidebarService
+
+@{
+    ViewBag.Title = "Profile";
+    Layout =  "/Views/Shared/_LayoutStoreOwner.cshtml";
 }
 
-<h2>Manage your account</h2>
+<h2 class="text-center">Manage your account</h2>
 
 <div>
-    <h4>Change your account settings</h4>
-    <hr/>
+    @* <h4 class="text-center">Change your account settings</h4> *@
+    @* <hr/> *@
     <div class="row">
         <div class="col-md-3">
             <partial name="_ManageNav"/>
@@ -19,4 +23,9 @@
 
 @section Scripts {
     @RenderSection("Scripts", required: false)
+}
+
+@section Sidebar
+{
+    @Html.Raw(_AdminSidebarService.renderHtml())
 }

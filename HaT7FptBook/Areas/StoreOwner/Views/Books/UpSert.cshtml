@@ -1,12 +1,14 @@
 ﻿@model HaT7FptBook.ViewModels.ProductUpSertVM
+@using HaT7FptBook.Menu
+@inject AdminSidebarService _AdminSidebarService
 
 @{
-    ViewBag.Title = "Product";
-    Layout = "_Layout";
-    var title = Model.Book.Id == 0 ? "Create new Product" : "Edit Product";
+    ViewBag.Title = "Manage Book";
+    Layout =  "/Views/Shared/_LayoutStoreOwner.cshtml";
+    var title = Model.Book.Id == 0 ? "Create new Book" : "Edit Book";
 }
 
-<h2>@title</h2>
+<h2 class="text-center">@title</h2>
 
 <form method="post" asp-controller="Books" asp-action="UpSert" enctype="multipart/form-data">
     <partial name="_StatusMessenger" model="@ViewData["Message"]"/>
@@ -74,3 +76,12 @@
         </div>
     </div>
 </form>
+
+@{
+    _AdminSidebarService.SetActive("Books", "UpSert", "StoreOwner");
+}
+
+@section Sidebar
+{
+    @Html.Raw(_AdminSidebarService.renderHtml())
+}

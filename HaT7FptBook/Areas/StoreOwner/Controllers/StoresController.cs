@@ -65,7 +65,7 @@ namespace HaT7FptBook.Areas.StoreOwner.Controllers
         }
 
         [HttpPost]
-        public IActionResult UpSert([Bind("Id,Name")]Store store)
+        public IActionResult UpSert(Store store)
         {
             var claimIdentity = (ClaimsIdentity) User.Identity;
             var claims = claimIdentity.FindFirst(ClaimTypes.NameIdentifier);
@@ -79,11 +79,11 @@ namespace HaT7FptBook.Areas.StoreOwner.Controllers
             
             if (store.Id == 0 || store.Id == null)
             {
-                // var checkStoreExist = _db.Stores.Any(a=> a.StoreOwnerId == claims.Value);
-                // if (checkStoreExist)
-                // {
-                //     return BadRequest();
-                // }
+                var checkStoreExist = _db.Stores.Any(a=> a.StoreOwnerId == claims.Value);
+                if (checkStoreExist)
+                {
+                    return BadRequest();
+                }
                 _db.Stores.Add(store);
             }
             else
