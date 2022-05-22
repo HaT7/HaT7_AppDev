@@ -25,8 +25,6 @@ namespace HaT7FptBook.Areas.StoreOwner.Controllers
     {
         private readonly ApplicationDbContext _db;
         private readonly IWebHostEnvironment _environment;
-        private readonly int _recordsPerPage = 10;
-
         public BooksController(ApplicationDbContext db, IWebHostEnvironment environment)
         {
             _db = db;
@@ -35,7 +33,7 @@ namespace HaT7FptBook.Areas.StoreOwner.Controllers
 
         //====================== INDEX ==========================   
         [HttpGet]
-        public async Task<IActionResult> Index(int id = 0, string searchString = "")
+        public async Task<IActionResult> Index()
         {
             var claimIdentity = (ClaimsIdentity) User.Identity;
             var claims = claimIdentity.FindFirst(ClaimTypes.NameIdentifier);
@@ -55,20 +53,9 @@ namespace HaT7FptBook.Areas.StoreOwner.Controllers
             
             try
             {
-                var products = _db.Books
-                    .Where(s => s.Title.Contains(searchString) || s.ISBN.Contains(searchString))
+                var productList = _db.Books
                     .Where(a => a.StoreId == storeId.Id)
                     .Include(a => a.Category)
-                    .ToList();
-                int numberOfRecords = products.Count();
-                int numberOfPages = (int) Math.Ceiling((double) numberOfRecords / _recordsPerPage);
-                ViewBag.numberOfPages = numberOfPages;
-                ViewBag.currentPage = id;
-                ViewData["CurrentFilter"] = searchString;
-                var productList = products
-                    .Skip(id * _recordsPerPage)
-                    .Take(_recordsPerPage)
-                    .Where(a => a.StoreId == storeId.Id)
                     .ToList();
 
                 return View(productList);
@@ -101,7 +88,7 @@ namespace HaT7FptBook.Areas.StoreOwner.Controllers
             
             var storeId = _db.Stores.FirstOrDefault(a => a.StoreOwnerId == claims.Value);
 
-            var categoryList = _db.Categories.ToList();
+            var categoryList = _db.Categories.Where(a => a.StoreId == storeId.Id).ToList();
             var result = categoryList.Select(category => new SelectListItem
             {
                 Text = category.Name,
@@ -212,14 +199,14 @@ namespace HaT7FptBook.Areas.StoreOwner.Controllers
             //     productUpSertVm.Book.ImageUrl = objFromDb.ImageUrl;
             // }
             
-            if (_db.Books.Any(a =>
-                    a.ISBN.ToLower().Trim() == productUpSertVm.Book.ISBN.ToLower().Trim() &&
-                    a.Id != productUpSertVm.Book.Id))
-            {
-                ViewData["Message"] = "Error: ISBN already exist";
-                productUpSertVm.CategoryList = CategorySelectListItems();
-                return View(productUpSertVm);
-            }
+            // if (_db.Books.Any(a =>
+            //         a.ISBN.ToLower().Trim() == productUpSertVm.Book.ISBN.ToLower().Trim() &&
+            //         a.Id != productUpSertVm.Book.Id))
+            // {
+            //     ViewData["Message"] = "Error: ISBN already exist";
+            //     productUpSertVm.CategoryList = CategorySelectListItems();
+            //     return View(productUpSertVm);
+            // }
 
             if (productUpSertVm.Book.Id == 0 || productUpSertVm.Book.Id == null)
             {
@@ -238,6 +225,11 @@ namespace HaT7FptBook.Areas.StoreOwner.Controllers
         [HttpPost]
         public IActionResult UploadExcel(IFormFile file)
         {
+            var claimIdentity = (ClaimsIdentity) User.Identity;
+            var claims = claimIdentity.FindFirst(ClaimTypes.NameIdentifier);
+
+            var storeId = _db.Stores.FirstOrDefault(a => a.StoreOwnerId == claims.Value);
+            
             if (file != null)
             {
                 //create folder
@@ -262,6 +254,7 @@ namespace HaT7FptBook.Areas.StoreOwner.Controllers
                 {
                     var book = new Book()
                     {
+                        StoreId = storeId.Id,
                         ImageUrl = reader.GetValue(0).ToString(),
                         ISBN = reader.GetValue(1).ToString(),
                         Title = reader.GetValue(2).ToString(),

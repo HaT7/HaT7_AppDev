@@ -111,6 +111,11 @@ namespace HaT7FptBook.Areas.StoreOwner.Controllers
          [HttpPost]
          public IActionResult UploadExcel(IFormFile file)
          {
+             var claimIdentity = (ClaimsIdentity) User.Identity;
+             var claims = claimIdentity.FindFirst(ClaimTypes.NameIdentifier);
+
+             var storeId = _db.Stores.FirstOrDefault(a => a.StoreOwnerId == claims.Value);
+             
              if (file != null)
              {
                  //create folder
@@ -135,6 +140,7 @@ namespace HaT7FptBook.Areas.StoreOwner.Controllers
                  {
                      var category = new Category()
                      {
+                         StoreId = storeId.Id,
                          Name = reader.GetValue(0).ToString(),
                          Description = reader.GetValue(1).ToString()
                      };
