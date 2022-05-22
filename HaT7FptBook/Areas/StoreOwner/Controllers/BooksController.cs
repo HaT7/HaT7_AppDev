@@ -41,12 +41,18 @@ namespace HaT7FptBook.Areas.StoreOwner.Controllers
             var claims = claimIdentity.FindFirst(ClaimTypes.NameIdentifier);
             var storeId = _db.Stores.FirstOrDefault(a => a.StoreOwnerId == claims.Value);
 
-            // if (storeId == null)
-            // {
-            //     ViewData["Message"] = "Error: Store not exist. Let's create your Store and Category first";
-            //     return RedirectToAction("Index", "Stores", new {area = "StoreOwner"});
-            // }
+            if (storeId == null)
+            {
+                ViewData["Message"] = "Error: Store not exist. Let's create your Store and Category first";
+                return RedirectToAction("Index", "Stores", new {area = "StoreOwner"});
+            }
 
+            // if (!_db.Categories.Any(a => a.StoreId == storeId.Id))
+            // {
+            //     ViewData["Message"] = "Error: Category not exist. Let's create your Category first";
+            //     return RedirectToAction("Index", "Categories", new {area = "StoreOwner"});
+            // }
+            
             try
             {
                 var products = _db.Books
@@ -90,10 +96,10 @@ namespace HaT7FptBook.Areas.StoreOwner.Controllers
         [NonAction]
         private IEnumerable<SelectListItem> CategorySelectListItems()
         {
-            // var claimIdentity = (ClaimsIdentity) User.Identity;
-            // var claims = claimIdentity.FindFirst(ClaimTypes.NameIdentifier);
-            //
-            // var storeId = _db.Stores.FirstOrDefault(a => a.StoreOwnerId == claims.Value);
+            var claimIdentity = (ClaimsIdentity) User.Identity;
+            var claims = claimIdentity.FindFirst(ClaimTypes.NameIdentifier);
+            
+            var storeId = _db.Stores.FirstOrDefault(a => a.StoreOwnerId == claims.Value);
 
             var categoryList = _db.Categories.ToList();
             var result = categoryList.Select(category => new SelectListItem
@@ -116,6 +122,18 @@ namespace HaT7FptBook.Areas.StoreOwner.Controllers
 
             var storeId = _db.Stores.FirstOrDefault(a => a.StoreOwnerId == claims.Value);
 
+            if (storeId == null)
+            {
+                ViewData["Message"] = "Error: Store not exist. Let's create your Store and Category first";
+                return RedirectToAction("Index", "Stores", new {area = "StoreOwner"});
+            }
+
+            // if (!_db.Categories.Any(a => a.StoreId == storeId.Id))
+            // {
+            //     ViewData["Message"] = "Error: Category not exist. Let's create your Category first";
+            //     return RedirectToAction("Index", "Categories", new {area = "StoreOwner"});
+            // }
+            
             if (id == 0 || id == null)
             {
                 productUpSertVM.Book = new Book();

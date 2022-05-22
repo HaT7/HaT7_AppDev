@@ -4,68 +4,51 @@
 
 @{
     ViewBag.Title = "Category List";
-    Layout =  "/Views/Shared/_LayoutStoreOwner.cshtml";
+    Layout = "/Views/Shared/_LayoutStoreOwner.cshtml";
 }
 
 @if (Model.Any())
 {
     <partial name="_StatusMessenger" model="@ViewData["Message"]"/>
-    <form asp-action="Index" method="get">
-        <div class="d-flex flex-row justify-content-between mt-3 mb-1">
-            <div>
-                <a asp-controller="Categories" asp-action="UpSert" class="btn btn-primary">Create new Category</a>
-            </div>
 
-            <div class="d-flex">
-                <input
-                    oninvalid="InvalidMsg(this);" oninput="InvalidMsg(this);"
-                    type="text" name="SearchString" value="@ViewData["CurrentFilter"]"
-                    required pattern="\S+.*" placeholder=""
-                    class="w-49 mr-1"/>
-                <button type="submit" value="Search" class="btn btn-primary mr-1">Search</button>
-                <a asp-action="Index" class="btn btn-info mr-1">Back to List</a>
+    <div class="card shadow mb-4">
+        <partial name="_StatusMessenger" model="@ViewData["Message"]"/>
+        <div class="card-body text-dark" style="background-color: #d3d4d4">
+            <div class="table-responsive font-weight-bold">
+                <table class="table table-bordered" id="dataTable">
+                    
+                    <thead>
+                    <tr>
+                        <th>Name</th>
+                        <th>Description</th>
+                        <th>Action</th>
+                    </tr>
+                    </thead>
+                    
+                    <tfoot>
+                    <tr>
+                        <th>Name</th>
+                        <th>Description</th>
+                        <th>Action</th>
+                    </tr>
+                    </tfoot>
+                    
+                    <tbody>
+                    @foreach (var category in @Model)
+                    {
+                        <tr>
+                            <td>@category.Name</td>
+                            <td>@category.Description</td>
+                            <td>
+                                <a asp-controller="Categories" asp-action="UpSert" asp-route-id="@category.Id" class="btn btn-info">Edit</a>
+                                <a asp-controller="Categories" asp-action="Delete" asp-route-id="@category.Id" class="btn btn-danger" onclick="return confirm('Do you want delete this item?')">Delete</a>
+                            </td>
+                        </tr>
+                    }
+                    </tbody>
+                </table>
             </div>
         </div>
-    </form>
-
-    <table style="width: 100%">
-        <thead>
-        <tr>
-            <th>No. </th>
-            <th>Name</th>
-            <th>Description</th>
-            <th>Action</th>
-        </tr>
-        </thead>
-
-        @{ var i = 1; }
-        @foreach (var category in @Model)
-        {
-            <tr>
-                <td>@i</td>
-                <td>@category.Name</td>
-                <td>@category.Description</td>
-                <td>
-                    <a asp-controller="Categories" asp-action="UpSert" asp-route-id="@category.Id" class="btn btn-info">Edit</a>
-                    <a asp-controller="Categories" asp-action="Delete" asp-route-id="@category.Id" class="btn btn-danger" onclick="return confirm('Do you want delete this item?')">Delete</a>
-                </td>
-            </tr>
-            i++;
-        }
-    </table>
-    
-    <div style="display:flex;text-align:center;justify-content:center">
-        <nav aria-label="Page navigation example">
-            <ul class="pagination">
-                @for (var x = 0; x < @ViewBag.numberOfPages; x++)
-                {
-                    var style = (ViewBag.currentPage == @x) ? "active" : "";
-                    <li class="page-item @style">
-                        <a class="page-link" asp-route-id="@x" asp-route-searchString="@ViewData["CurrentFilter"]">@(x + 1)</a>
-                    </li>
-                }
-            </ul>
-        </nav>
     </div>
 }
 else
@@ -85,17 +68,3 @@ else
 {
     @Html.Raw(_AdminSidebarService.renderHtml())
 }
-@* <script> *@
-@*         function InvalidMsg(textbox) { *@
-@* *@
-@*             if (textbox.value === '') { *@
-@*                 textbox.setCustomValidity *@
-@*                       ('Type something in here to search'); *@
-@*             } *@
-@*             else { *@
-@*                 textbox.setCustomValidity(''); *@
-@*             } *@
-@* *@
-@*             return true; *@
-@*         } *@
-@* </script> *@

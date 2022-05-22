@@ -14,6 +14,7 @@ using HaT7FptBook.Initializer;
 using HaT7FptBook.Menu;
 using HaT7FptBook.Utility;
 using Microsoft.AspNetCore.Mvc.Infrastructure;
+using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
