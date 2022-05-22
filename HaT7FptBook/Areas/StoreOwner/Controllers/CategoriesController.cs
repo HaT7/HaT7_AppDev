@@ -21,8 +21,6 @@ namespace HaT7FptBook.Areas.StoreOwner.Controllers
     {
         private readonly ApplicationDbContext _db;
         private readonly IWebHostEnvironment _environment;
-        private readonly int _recordsPerPage = 12;
-
         public CategoriesController(ApplicationDbContext db, IWebHostEnvironment environment)
         {
             _db = db;
@@ -31,7 +29,7 @@ namespace HaT7FptBook.Areas.StoreOwner.Controllers
 
         //======================== INDEX ==========================
         [HttpGet]
-        public IActionResult Index(int id = 0, string searchString = "")
+        public IActionResult Index()
         {
             var claimIdentity = (ClaimsIdentity) User.Identity;
             var claims = claimIdentity.FindFirst(ClaimTypes.NameIdentifier);
@@ -45,20 +43,7 @@ namespace HaT7FptBook.Areas.StoreOwner.Controllers
             
             try
             {
-                var categories = _db.Categories
-                    .Where(s => s.Name.Contains(searchString))
-                    .OrderBy(a => a.CreateAt)
-                    .ToList();
-                int numberOfRecords = categories.Count();
-                int numberOfPages = (int) Math.Ceiling((double) numberOfRecords / _recordsPerPage);
-                ViewBag.numberOfPages = numberOfPages;
-                ViewBag.currentPage = id;
-                ViewData["CurrentFilter"] = searchString;
-                var categoryList = categories
-                    .Skip(id * _recordsPerPage)
-                    .Take(_recordsPerPage)
-                    .ToList();
-
+                var categoryList = _db.Categories.Where(a => a.StoreId == storeId.Id).ToList();
                 return View(categoryList);
             }
             catch (Exception e)
@@ -66,7 +51,6 @@ namespace HaT7FptBook.Areas.StoreOwner.Controllers
                 Console.WriteLine("Category Error: " + e.Message);
                 ViewData["Message"] = "Error: " + e.Message; 
             }
-
             return View(new List<Category>());
         }
 
@@ -86,25 +70,24 @@ namespace HaT7FptBook.Areas.StoreOwner.Controllers
          {
              var claimIdentity = (ClaimsIdentity) User.Identity;
              var claims = claimIdentity.FindFirst(ClaimTypes.NameIdentifier);
-        
+
              var storeId = _db.Stores.FirstOrDefault(a => a.StoreOwnerId == claims.Value);
-        
+
              if (storeId == null)
              {
                  ViewData["Message"] = "Error: Store Id not exist. Let's create your Store first";
                  return RedirectToAction("Index", "Stores", new { area = "StoreOwner"});
              }
-             
+
              if (id == 0 || id == null)
              {
                  var categoryCreate = new Category();
+                 categoryCreate.StoreId = storeId.Id;
                  return View(categoryCreate);
              }
-        
              var category = _db.Categories.Find(id);
              return View(category);
          }
-        
          [HttpPost]
          public IActionResult UpSert(Category category)
          {
@@ -120,7 +103,6 @@ namespace HaT7FptBook.Areas.StoreOwner.Controllers
              {
                  _db.Categories.Update(category);
              }
-        
              _db.SaveChanges();
              return RedirectToAction(nameof(Index));
          }
