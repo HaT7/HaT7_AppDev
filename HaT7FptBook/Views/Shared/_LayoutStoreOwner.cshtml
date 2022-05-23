@@ -30,17 +30,22 @@
 
     <!-- Core plugin JavaScript-->
     <script src="~/lib/jquery-easing/jquery.easing.min.js"></script>
-    
+
     <!-- Custom styles for this page -->
     <link href="~/lib/datatables/dataTables.bootstrap4.min.css" rel="stylesheet">
-    
+
     <!-- Page level plugins -->
     <script src="~/lib/datatables/jquery.dataTables.min.js"></script>
     <script src="~/lib/datatables/dataTables.bootstrap4.min.js"></script>
-    
+
     <!-- Page level custom scripts -->
     <script src="~/lib/datatables/datatables-demo.js"></script>
-    
+
+    <!-- Alert -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/sweetalert/2.1.2/sweetalert.min.js" integrity="sha512-AA1Bzp5Q0K1KanKKmvN/4d3IRKVlv9PYgwFPvm32nPO6QS8yH1HO7LbgB1pgiOxPtfeg5zEn2ba64MUcqJx6CA==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+
+    <!-- Toastr -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/css/toastr.min.css"/>
 </head>
 
 <body id="page-top">
@@ -349,6 +354,8 @@
 
 <!-- Custom scripts for all pages-->
 <script src="~/js/sb-admin-2.min.js"></script>
+
+<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/js/toastr.min.js"></script>
 
 @await RenderSectionAsync("Scripts", required: false)
 

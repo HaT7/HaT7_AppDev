@@ -83,19 +83,26 @@ namespace HaT7FptBook.Areas.StoreOwner.Controllers
         [NonAction]
         private IEnumerable<SelectListItem> CategorySelectListItems()
         {
-            var claimIdentity = (ClaimsIdentity) User.Identity;
-            var claims = claimIdentity.FindFirst(ClaimTypes.NameIdentifier);
-            
-            var storeId = _db.Stores.FirstOrDefault(a => a.StoreOwnerId == claims.Value);
-
-            var categoryList = _db.Categories.Where(a => a.StoreId == storeId.Id).ToList();
-            var result = categoryList.Select(category => new SelectListItem
+            try
             {
-                Text = category.Name,
-                Value = category.Id.ToString()
-            });
+                var claimIdentity = (ClaimsIdentity) User.Identity;
+                var claims = claimIdentity.FindFirst(ClaimTypes.NameIdentifier);
+            
+                var storeId = _db.Stores.FirstOrDefault(a => a.StoreOwnerId == claims.Value);
+            
+                var categoryList = _db.Categories.Where(a => a.StoreId == storeId.Id).ToList();
+                var result = categoryList.Select(category => new SelectListItem
+                {
+                    Text = category.Name,
+                    Value = category.Id.ToString()
+                });
 
-            return result;
+                return result;
+            }
+            catch (Exception e)
+            {
+                return new List<SelectListItem>();
+            }
         }
 
         [HttpGet]
@@ -262,7 +269,7 @@ namespace HaT7FptBook.Areas.StoreOwner.Controllers
                         Author = reader.GetValue(4).ToString(),
                         NoPage = reader.GetValue(5).GetHashCode(),
                         Price = (double)reader.GetValue(6),
-                        // CategoryId = reader.GetValue(7).ToString().Where(a => _db.Categories.Find().Id)
+                        CategoryId = _db.Categories.FirstOrDefault(c => c.Name == reader.GetValue(7)).Id
                     };
 
                     _db.Books.Add(book);
