@@ -20,6 +20,18 @@ namespace HaT7FptBook.Menu
 
             Items.Add(new SidebarItem() {Type = SidebarItemType.Divider});
             Items.Add(new SidebarItem() {Type = SidebarItemType.Heading, Title = "General Management"});
+            
+            Items.Add(new SidebarItem()
+            {
+                Type = SidebarItemType.NavItem,
+                Controller = "Stores",
+                Action = "Index",
+                Area = "StoreOwner",
+                Title = "Manage Store",
+                AwesomeIcon = "fas fa-folder"
+            });
+            
+            Items.Add(new SidebarItem() {Type = SidebarItemType.Divider});
 
             Items.Add(new SidebarItem()
             {
@@ -95,18 +107,6 @@ namespace HaT7FptBook.Menu
             {
                 Type = SidebarItemType.NavItem,
                 Controller = "Stores",
-                Action = "UpSert",
-                Area = "StoreOwner",
-                Title = "Edit Store",
-                AwesomeIcon = "fas fa-folder"
-            });
-             
-            Items.Add(new SidebarItem() {Type = SidebarItemType.Divider});
-            
-            Items.Add(new SidebarItem()
-            {
-                Type = SidebarItemType.NavItem,
-                Controller = "Stores",
                 Action = "Help",
                 Area = "StoreOwner",
                 Title = "Do you need some help?",
@@ -124,8 +124,7 @@ namespace HaT7FptBook.Menu
             {
                 html.Append(item.RenderHtml(UrlHelper));
             }
-
-
+            
             return html.ToString();
         }
 

@@ -28,7 +28,7 @@ namespace HaT7FptBook.Menu {
         public string RenderHtml(IUrlHelper urlHelper)
         {
             var html = new StringBuilder();
-
+            
             if (Type == SidebarItemType.Divider)
             {
                 html.Append("<hr class=\"sidebar-divider my-2\">");

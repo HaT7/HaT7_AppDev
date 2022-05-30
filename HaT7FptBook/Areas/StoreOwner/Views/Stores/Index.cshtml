@@ -3,7 +3,7 @@
 @inject AdminSidebarService _AdminSidebarService
 
 @{
-    Layout =  "/Views/Shared/_LayoutStoreOwner.cshtml";
+    Layout = "/Views/Shared/_LayoutStoreOwner.cshtml";
     ViewData["Title"] = "Store Owner Control Panel";
 }
 
@@ -19,36 +19,6 @@
         <div>
             <div class="row mb-2">
                 <div class="col-3">
-                    <h5>View order information</h5>
-                </div>
-
-                <div class="col">
-                    <a class="btn btn-info" asp-area="StoreOwner" asp-controller="Orders" asp-action="Index">Order</a>
-                </div>
-            </div>
-
-            <div class="row mb-2">
-                <div class="col-3">
-                    <h5>Manage product list</h5>
-                </div>
-
-                <div class="col">
-                    <a class="btn btn-info" asp-area="StoreOwner" asp-controller="Books" asp-action="Index">Product</a>
-                </div>
-            </div>
-
-            <div class="row mb-2">
-                <div class="col-3">
-                    <h5>Manage category list</h5>
-                </div>
-
-                <div class="col">
-                    <a class="btn btn-info" asp-area="StoreOwner" asp-controller="Categories" asp-action="Index">Cateogry</a>
-                </div>
-            </div>
-
-            <div class="row mb-2">
-                <div class="col-3">
                     <h5>Edit your store information</h5>
                 </div>
 
@@ -59,11 +29,17 @@
 
             <div class="row mb-2">
                 <div class="col-3">
-                    <h5>Do you need some help?</h5>
+                    <h5>Delete your store</h5>
                 </div>
 
                 <div class="col">
-                    <a class="btn btn-info" asp-area="StoreOwner" asp-controller="Stores" asp-action="Help">Help</a>
+                    <a class="btn btn-info"
+                       asp-controller="Stores"
+                       asp-action="Delete"
+                       asp-route-id="@store.Id"
+                       onclick="return confirm('Do you want delete this item?')">
+                        Delete
+                    </a>
                 </div>
             </div>
         </div>

@@ -17,7 +17,6 @@ namespace HaT7FptBook.Areas.StoreOwner.Controllers
     public class OrdersController : Controller
     {
         private readonly ApplicationDbContext _db;
-        private readonly int _recordsPerPage = 10;
         public OrdersController(ApplicationDbContext db)
         {
             _db = db;
@@ -25,7 +24,7 @@ namespace HaT7FptBook.Areas.StoreOwner.Controllers
 
         //======================== INDEX ==========================
         [HttpGet]
-        public IActionResult Index(int id = 0, string searchString = "")
+        public IActionResult Index()
         {
             List<int> listId = new List<int>();
 
@@ -51,21 +50,10 @@ namespace HaT7FptBook.Areas.StoreOwner.Controllers
 
             var listDistinId = new HashSet<int>(listId);
 
-            var oderHeader = _db.OrderHeaders
+            var oderHeaderList = _db.OrderHeaders
                 .Where(a => listDistinId.ToList().Contains(a.Id))
-                .Where(s => s.ApplicationUser.FullName.Contains(searchString)|| s.ApplicationUser.Email.Contains(searchString))
                 .Include(a => a.ApplicationUser)
                 .ToList();
-            int numberOfRecords = oderHeader.Count();
-            int numberOfPages = (int) Math.Ceiling((double) numberOfRecords / _recordsPerPage);
-            ViewBag.numberOfPages = numberOfPages;
-            ViewBag.currentPage = id;
-            ViewData["CurrentFilter"] = searchString;
-            var oderHeaderList = oderHeader
-                .Skip(id * _recordsPerPage)
-                .Take(_recordsPerPage)
-                .ToList();
-
             return View(oderHeaderList);
         }
 

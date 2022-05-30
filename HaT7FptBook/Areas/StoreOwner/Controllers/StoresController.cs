@@ -15,6 +15,7 @@ namespace HaT7FptBook.Areas.StoreOwner.Controllers
     public class StoresController : Controller
     {
         private readonly ApplicationDbContext _db;
+
         public StoresController(ApplicationDbContext db)
         {
             _db = db;
@@ -26,10 +27,10 @@ namespace HaT7FptBook.Areas.StoreOwner.Controllers
         {
             var claimIdentity = (ClaimsIdentity) User.Identity;
             var claims = claimIdentity.FindFirst(ClaimTypes.NameIdentifier);
-            
+
             try
             {
-                var store = _db.Stores.Where(a=>a.StoreOwnerId == claims.Value).ToList();
+                var store = _db.Stores.Where(a => a.StoreOwnerId == claims.Value).ToList();
                 return View(store);
             }
             catch (Exception e)
@@ -37,20 +38,20 @@ namespace HaT7FptBook.Areas.StoreOwner.Controllers
                 Console.WriteLine("Store Error: " + e.Message);
                 ViewData["Message"] = "Error: " + e.Message;
             }
-            
+
             return View(new List<Store>());
         }
 
         //======================== DELETE ==========================
         [HttpGet]
-        public IActionResult Delete(int id)
+        public IActionResult Delete(int? id)
         {
             var store = _db.Stores.Find(id);
             _db.Stores.Remove(store);
             _db.SaveChanges();
             return RedirectToAction(nameof(Index));
         }
-        
+
         //======================== UPSERT ==========================
         [HttpGet]
         public IActionResult UpSert(int? id)
@@ -71,19 +72,21 @@ namespace HaT7FptBook.Areas.StoreOwner.Controllers
             var claims = claimIdentity.FindFirst(ClaimTypes.NameIdentifier);
             store.StoreOwnerId = claims.Value;
 
-            if (_db.Stores.Any(a => a.Name.ToLower().Trim() == store.Name.ToLower().Trim() && a.StoreOwnerId != store.StoreOwnerId))
+            if (_db.Stores.Any(a =>
+                    a.Name.ToLower().Trim() == store.Name.ToLower().Trim() && a.StoreOwnerId != store.StoreOwnerId))
             {
                 ViewData["Message"] = "Error: Store name already exist";
                 return View(store);
             }
-            
+
             if (store.Id == 0 || store.Id == null)
             {
-                var checkStoreExist = _db.Stores.Any(a=> a.StoreOwnerId == claims.Value);
+                var checkStoreExist = _db.Stores.Any(a => a.StoreOwnerId == claims.Value);
                 if (checkStoreExist)
                 {
                     return BadRequest();
                 }
+
                 _db.Stores.Add(store);
             }
             else
@@ -94,7 +97,7 @@ namespace HaT7FptBook.Areas.StoreOwner.Controllers
             _db.SaveChanges();
             return RedirectToAction(nameof(Index));
         }
-        
+
         //======================== HELP ==========================
         public IActionResult Help()
         {

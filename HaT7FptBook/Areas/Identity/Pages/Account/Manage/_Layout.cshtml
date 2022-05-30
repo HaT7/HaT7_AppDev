@@ -1,9 +1,10 @@
 ﻿@using HaT7FptBook.Menu
+@using HaT7FptBook.Utility
 @inject AdminSidebarService _AdminSidebarService
 
 @{
     ViewBag.Title = "Profile";
-    Layout =  "/Views/Shared/_LayoutStoreOwner.cshtml";
+    Layout = "/Views/Shared/_Layout.cshtml";
 }
 
 <h2 class="text-center">Manage your account</h2>
@@ -25,7 +26,11 @@
     @RenderSection("Scripts", required: false)
 }
 
+@if (User.IsInRole(SD.Role_StoreOwner))
+{
+    Layout = "/Views/Shared/_LayoutStoreOwner.cshtml";
 @section Sidebar
 {
     @Html.Raw(_AdminSidebarService.renderHtml())
+}
 }
