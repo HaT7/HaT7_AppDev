@@ -33,13 +33,7 @@
                 </div>
 
                 <div class="col">
-                    <a class="btn btn-info"
-                       asp-controller="Stores"
-                       asp-action="Delete"
-                       asp-route-id="@store.Id"
-                       onclick="return confirm('Do you want delete this item?')">
-                        Delete
-                    </a>
+                    <a class="btn btn-danger" onclick=Delete(@store.Id)>Delete</a>
                 </div>
             </div>
         </div>
@@ -60,4 +54,37 @@ else
 @section Sidebar
 {
     @Html.Raw(_AdminSidebarService.renderHtml())
+}
+
+@section Scripts{
+    <script>
+    function Delete(id){
+        swal({
+            title: "Are you sure?",
+            text: "Once deleted, you will not be able to recover this imaginary file!",
+            icon: "warning",
+            buttons: true,
+            dangerMode: true,
+        }).then((willDelete) => {
+            if (willDelete){
+                $.ajax({
+                    type: "DELETE",
+                    url: "/StoreOwner/Stores/Delete/" + id,
+                    success: function (data){
+                        console.log(data)
+                        if(data.success){
+                            toastr.success(data.message);
+                            setTimeout(function(){
+                               window.location.reload(1);
+                            }, 1000);
+                        }
+                        else {
+                            toastr.error(data.message);
+                        }
+                    }
+                });
+            }
+        });
+    }
+    </script>
 }

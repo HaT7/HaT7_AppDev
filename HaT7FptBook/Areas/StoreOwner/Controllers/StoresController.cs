@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Security.Claims;
+using System.Threading.Tasks;
 using HaT7FptBook.Data;
 using HaT7FptBook.Models;
 using HaT7FptBook.Utility;
@@ -43,13 +44,25 @@ namespace HaT7FptBook.Areas.StoreOwner.Controllers
         }
 
         //======================== DELETE ==========================
-        [HttpGet]
-        public IActionResult Delete(int? id)
+        [HttpDelete]
+        public async Task<IActionResult> Delete(int? id)
         {
-            var store = _db.Stores.Find(id);
-            _db.Stores.Remove(store);
-            _db.SaveChanges();
-            return RedirectToAction(nameof(Index));
+            try
+            {
+                var store = await _db.Stores.FindAsync(id);
+                if (store == null)
+                {
+                    return Json(new { success = false, message = "Error while Deleting" });
+                }
+                _db.Stores.Remove(store);
+                await _db.SaveChangesAsync();
+                return Json(new { success = true, message = "Delete Successful" });
+            }
+            catch (Exception e)
+            {
+                //Console.WriteLine(e);
+                return Json(new { success = false, message = e.Message });
+            }
         }
 
         //======================== UPSERT ==========================

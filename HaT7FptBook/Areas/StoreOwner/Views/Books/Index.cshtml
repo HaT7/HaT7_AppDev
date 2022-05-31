@@ -58,7 +58,7 @@
                             <td>
                                 <a asp-controller="Books" asp-action="UpSert" asp-route-id="@product.Id" class="btn btn-info">Edit</a>
                                 <a asp-controller="Books" asp-action="Details" asp-route-id="@product.Id" class="btn btn-info">Detail</a>
-                                <a asp-controller="Books" asp-action="Delete" asp-route-id="@product.Id" class="btn btn-danger" onclick="return confirm('Do you want delete this item?')">Delete</a>
+                                <a class="btn btn-danger" onclick=Delete(@product.Id)>Delete</a>
                             </td>
                         </tr>
                     }
@@ -84,4 +84,37 @@ else
 @section Sidebar
 {
     @Html.Raw(_AdminSidebarService.renderHtml())
+}
+
+@section Scripts{
+    <script>
+    function Delete(id){
+        swal({
+            title: "Are you sure?",
+            text: "Once deleted, you will not be able to recover this imaginary file!",
+            icon: "warning",
+            buttons: true,
+            dangerMode: true,
+        }).then((willDelete) => {
+            if (willDelete){
+                $.ajax({
+                    type: "DELETE",
+                    url: "/StoreOwner/Books/Delete/" + id,
+                    success: function (data){
+                        console.log(data)
+                        if(data.success){
+                            toastr.success(data.message);
+                            setTimeout(function(){
+                               window.location.reload(1);
+                            }, 1000);
+                        }
+                        else {
+                            toastr.error(data.message);
+                        }
+                    }
+                });
+            }
+        });
+    }
+    </script>
 }

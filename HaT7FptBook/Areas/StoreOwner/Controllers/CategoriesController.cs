@@ -68,7 +68,7 @@ namespace HaT7FptBook.Areas.StoreOwner.Controllers
                      return Json(new { success = false, message = "Error while Deleting" });
                  }
                  _db.Categories.Remove(category);
-                 _db.SaveChanges();
+                 await _db.SaveChangesAsync();
                  return Json(new { success = true, message = "Delete Successful" });
              }
              catch (Exception e)

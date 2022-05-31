@@ -33,7 +33,7 @@ namespace HaT7FptBook.Areas.StoreOwner.Controllers
 
         //====================== INDEX ==========================   
         [HttpGet]
-        public async Task<IActionResult> Index()
+        public Task<IActionResult> Index()
         {
             var claimIdentity = (ClaimsIdentity) User.Identity;
             var claims = claimIdentity.FindFirst(ClaimTypes.NameIdentifier);
@@ -42,7 +42,7 @@ namespace HaT7FptBook.Areas.StoreOwner.Controllers
             if (storeId == null)
             {
                 ViewData["Message"] = "Error: Store not exist. Let's create your Store and Category first";
-                return RedirectToAction("Index", "Stores", new {area = "StoreOwner"});
+                return Task.FromResult<IActionResult>(RedirectToAction("Index", "Stores", new {area = "StoreOwner"}));
             }
 
             // if (!_db.Categories.Any(a => a.StoreId == storeId.Id))
@@ -58,7 +58,7 @@ namespace HaT7FptBook.Areas.StoreOwner.Controllers
                     .Include(a => a.Category)
                     .ToList();
 
-                return View(productList);
+                return Task.FromResult<IActionResult>(View(productList));
             }
             catch (Exception e)
             {
@@ -66,17 +66,29 @@ namespace HaT7FptBook.Areas.StoreOwner.Controllers
                 ViewData["Message"] = "Error: " + e.Message;
             }
 
-            return View(new List<Book>());
+            return Task.FromResult<IActionResult>(View(new List<Book>()));
         }
 
         //====================== DELETE ==========================
-        [HttpGet]
-        public IActionResult Delete(int? id)
+        [HttpDelete]
+        public async  Task<IActionResult> Delete(int id)
         {
-            var product = _db.Books.Find(id);
-            _db.Books.Remove(product);
-            _db.SaveChanges();
-            return RedirectToAction(nameof(Index));
+            try
+            {
+                var product = await _db.Books.FindAsync(id);
+                if (product == null)
+                {
+                    return Json(new { success = false, message = "Error while Deleting" });
+                }
+                _db.Books.Remove(product);
+                await _db.SaveChangesAsync();
+                return Json(new { success = true, message = "Delete Successful" });
+            }
+            catch (Exception e)
+            {
+                //Console.WriteLine(e);
+                return Json(new { success = false, message = e.Message });
+            }
         }
 
         //====================== UPSERT ==========================
