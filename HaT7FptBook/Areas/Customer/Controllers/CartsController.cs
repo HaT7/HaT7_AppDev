@@ -92,15 +92,28 @@ namespace HaT7FptBook.Areas.Customer.Controllers
             return RedirectToAction(nameof(Index));
         }
 
-        public IActionResult Remove(int cartId)
+        [HttpDelete]
+        public async Task<IActionResult> Delete(int id)
         {
-            var cart = _db.Carts.Include(p => p.Book).FirstOrDefault(c => c.Id == cartId);
+            try
+            {
+                var cart = _db.Carts.Include(p => p.Book).FirstOrDefault(c => c.Id == id);
 
-            var cnt = _db.Carts.Where(u => u.UserId == cart.UserId).ToList().Count;
-            _db.Carts.Remove(cart);
-            _db.SaveChanges();
-            HttpContext.Session.SetInt32(SD.ssShoppingCart, cnt - 1);
-            return RedirectToAction(nameof(Index));
+                var cnt = _db.Carts.Where(u => u.UserId == cart.UserId).ToList().Count;
+                if (cart == null)
+                {
+                    return Json(new { success = false, message = "Error while Deleting" });
+                }
+                _db.Carts.Remove(cart);
+                await _db.SaveChangesAsync();
+                HttpContext.Session.SetInt32(SD.ssShoppingCart, cnt - 1);
+                return Json(new { success = true, message = "Delete Successful" });
+            }
+            catch (Exception e)
+            {
+                //Console.WriteLine(e);
+                return Json(new { success = false, message = e.Message });
+            }
         }
 
         [HttpGet]

@@ -5,45 +5,47 @@
     Layout = "_Layout";
 }
 
-
 <h2 class="text-center">Order Details</h2>
 
-<table style="width: 100%">
-    <thead>
-    <tr>
-        <th>Image</th>
-        <th>Product Name</th>
-        <th>Price</th>
-        <th>Quantity</th>
-        <th>Total</th>
-    </tr>
-    </thead>
+<div class="card shadow mb-4">
+    <partial name="_StatusMessenger" model="@ViewData["Message"]"/>
+    <div class="card-body text-dark" style="background-color: #d3d4d4">
+        <div class="table-responsive font-weight-bold">
+            <table class="table table-bordered" id="dataTable">
 
-    @{
-        double sum = 0;
-    }
-    
-    @foreach (var order in @Model)
-    {
-        <tr>
-            <td>
-                <img src="@order.Book.ImageUrl" class="card-img-top rounded" style="width: 200px"/>
-            </td>
-            <td>@order.Book.Title</td>
-            <td>@order.Book.Price</td>
-            <td>@order.Quantity</td>
-            @{
-                var total = @order.Book.Price * @order.Quantity;
-                sum += total;
-            }
-            <td>@total</td>
-        </tr>
-    }
-    <tr>
-        <td></td>
-        <td></td>
-        <td></td>
-        <td></td>
-        <td>Total: @sum</td>
-    </tr>
-</table>
+                <thead>
+                <tr>
+                    <th>Image</th>
+                    <th>Product Name</th>
+                    <th>Price</th>
+                    <th>Quantity</th>
+                    <th>Total</th>
+                </tr>
+                </thead>
+
+                <tbody>
+                @{
+                    double sum = 0;
+                }
+
+                @foreach (var order in @Model)
+                {
+                    <tr>
+                        <td class="text-center">
+                            <img src="@order.Book.ImageUrl" class="card-img-top rounded" style="width: 200px" alt=""/>
+                        </td>
+                        <td>@order.Book.Title</td>
+                        <td>@order.Book.Price</td>
+                        <td>@order.Quantity</td>
+                        @{
+                            var total = @order.Book.Price * @order.Quantity;
+                            sum += total;
+                        }
+                        <td>@total</td>
+                    </tr>
+                }
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>

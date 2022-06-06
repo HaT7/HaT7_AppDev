@@ -5,65 +5,158 @@
     Layout = "_Layout";
 }
 
-<h2>List User</h2>
-<a href="/Identity/Account/Register" class="btn btn-primary">Create new User</a>
+@* <h2>List User</h2> *@
+@* <a href="/Identity/Account/Register" class="btn btn-primary">Create new User</a> *@
 
-<form class="form-inline my-2 my-lg-0 float-right">
-    <input id="myInput" class="form-control mr-sm-2" type="text" placeholder="Search">
-</form>
+@* <form class="form-inline my-2 my-lg-0 float-right"> *@
+@*     <input id="myInput" class="form-control mr-sm-2" type="text" placeholder="Search"> *@
+@* </form> *@
 
-<table style="width: 100%">
-    <thead>
-    <tr>
-        <th>No. </th>
-        <th>Name</th>
-        <th>Email</th>
-        <th>Address</th>
-        <th>Role</th>
-        <th>Action</th>
-    </tr>
-    </thead>
+<div class="card shadow mb-4">
+    <partial name="_StatusMessenger" model="@ViewData["Message"]"/>
+    <div class="card-body text-dark" style="background-color: #d3d4d4">
+        <div class="table-responsive font-weight-bold">
+            <table class="table table-bordered" id="dataTable">
 
-    <tbody id="tblData">
-    @{ var i = 1; }
-    @foreach (var user in @Model)
-    {
-        <tr>
-            <td>@i</td>
-            <td>@user.FullName</td>
-            <td>@user.Email</td>
-            <td>@user.Address</td>
-            <td>@user.Role</td>
-            <td>
-                @if (user.LockoutEnd == null || user.LockoutEnd < DateTime.Now)
+                <thead>
+                <tr>
+                    <th>Name</th>
+                    <th>Email</th>
+                    <th>Address</th>
+                    <th>Role</th>
+                    <th>Action</th>
+                </tr>
+                </thead>
+
+                @if (Model.Count > 10)
                 {
-                    <a asp-controller="Users" asp-action="LockUnLock" asp-route-id="@user.Id" class="btn btn-info">Lock</a>
-                }
-                else
-                {
-                    <a asp-controller="Users" asp-action="LockUnLock" asp-route-id="@user.Id" class="btn btn-info">UnLock</a>
+                    <tfoot>
+                    <tr>
+                        <th>Name</th>
+                        <th>Email</th>
+                        <th>Address</th>
+                        <th>Role</th>
+                        <th>Action</th>
+                    </tr>
+                    </tfoot>
                 }
 
-                <a asp-controller="Users" asp-action="Update" asp-route-id="@user.Id" class="btn btn-info">Edit</a>
-                <a asp-controller="Users" asp-action="ConfirmEmail" asp-route-id="@user.Id" class="btn btn-success">Reset Password</a>
-                <a asp-controller="Users" asp-action="Delete" asp-route-id="@user.Id" class="btn btn-danger" onclick="return confirm('Do you want delete this item?')">Delete</a>
-            </td>
-        </tr>
-        i++;
-    }
-    </tbody>
-</table>
+                <tbody>
+                @foreach (var user in @Model)
+                {
+                    <tr>
+                        <td>@user.FullName</td>
+                        <td>@user.Email</td>
+                        <td>@user.Address</td>
+                        <td>@user.Role</td>
+                        <td>
+                            @if (user.LockoutEnd == null || user.LockoutEnd < DateTime.Now)
+                            {
+                                <a asp-controller="Users" asp-action="LockUnLock" asp-route-id="@user.Id" class="btn btn-info">Lock</a>
+                            }
+                            else
+                            {
+                                <a asp-controller="Users" asp-action="LockUnLock" asp-route-id="@user.Id" class="btn btn-info">UnLock</a>
+                            }
 
-@section Scripts
-{
+                            <a asp-controller="Users" asp-action="Update" asp-route-id="@user.Id" class="btn btn-info">Edit</a>
+                            <a asp-controller="Users" asp-action="ConfirmEmail" asp-route-id="@user.Id" class="btn btn-success">Reset Password</a>
+                            @* <a class="btn btn-danger" onclick=Delete(@user.Id)>Delete</a> *@
+                            <a asp-controller="Users" asp-action="Delete" asp-route-id="@user.Id" class="btn btn-danger" onclick="return confirm('Do you want delete this item?')">Delete</a>
+                        </td>
+                    </tr>
+                }
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+@* <table style="width: 100%"> *@
+@*     <thead> *@
+@*     <tr> *@
+@*         <th>No. </th> *@
+@*         <th>Name</th> *@
+@*         <th>Email</th> *@
+@*         <th>Address</th> *@
+@*         <th>Role</th> *@
+@*         <th>Action</th> *@
+@*     </tr> *@
+@*     </thead> *@
+@* *@
+@*     <tbody id="tblData"> *@
+@*     @{ var i = 1; } *@
+@*     @foreach (var user in @Model) *@
+@*     { *@
+@*         <tr> *@
+@*             <td>@i</td> *@
+@*             <td>@user.FullName</td> *@
+@*             <td>@user.Email</td> *@
+@*             <td>@user.Address</td> *@
+@*             <td>@user.Role</td> *@
+@*             <td> *@
+@*                 @if (user.LockoutEnd == null || user.LockoutEnd < DateTime.Now) *@
+@*                 { *@
+@*                     <a asp-controller="Users" asp-action="LockUnLock" asp-route-id="@user.Id" class="btn btn-info">Lock</a> *@
+@*                 } *@
+@*                 else *@
+@*                 { *@
+@*                     <a asp-controller="Users" asp-action="LockUnLock" asp-route-id="@user.Id" class="btn btn-info">UnLock</a> *@
+@*                 } *@
+@* *@
+@*                 <a asp-controller="Users" asp-action="Update" asp-route-id="@user.Id" class="btn btn-info">Edit</a> *@
+@*                 <a asp-controller="Users" asp-action="ConfirmEmail" asp-route-id="@user.Id" class="btn btn-success">Reset Password</a> *@
+@*                 <a asp-controller="Users" asp-action="Delete" asp-route-id="@user.Id" class="btn btn-danger" onclick="return confirm('Do you want delete this item?')">Delete</a> *@
+@*             </td> *@
+@*         </tr> *@
+@*         i++; *@
+@*     } *@
+@*     </tbody> *@
+@* </table> *@
+
+@section Scripts{
     <script>
-    $(document).ready(function(){
-            $("#myInput").on("keyup", function() {
-                var value = $(this).val().toLowerCase();
-                $("#tblData tr").filter(function() {
-                    $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1)
+    function Delete(id){
+        swal({
+            title: "Are you sure?",
+            text: "Once deleted, you will not be able to recover this imaginary file!",
+            icon: "warning",
+            buttons: true,
+            dangerMode: true,
+        }).then((willDelete) => {
+            if (willDelete){
+                $.ajax({
+                    type: "DELETE",
+                    url: "/Admin/Users/Delete/" + id,
+                    success: function (data){
+                        console.log(data)
+                        if(data.success){
+                            toastr.success(data.message);
+                            setTimeout(function(){
+                               window.location.reload(1);
+                            }, 1000);
+                        }
+                        else {
+                            toastr.error(data.message);
+                        }
+                    }
                 });
-            });
+            }
         });
+    }
     </script>
 }
+
+@* @section Scripts *@
+@* { *@
+@*     <script> *@
+@*     $(document).ready(function(){ *@
+@*             $("#myInput").on("keyup", function() { *@
+@*                 var value = $(this).val().toLowerCase(); *@
+@*                 $("#tblData tr").filter(function() { *@
+@*                     $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1) *@
+@*                 }); *@
+@*             }); *@
+@*         }); *@
+@*     </script> *@
+@* } *@

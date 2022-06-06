@@ -35,6 +35,11 @@ namespace HaT7FptBook.Areas.Customer.Controllers
                 return RedirectToAction("Index", "Stores", new {area = "StoreOwner"});
             }
             
+            if (User.IsInRole(SD.Role_Admin))
+            {
+                return RedirectToAction("Index", "Users", new {area = "Admin"});
+            }
+            
             var products = _db.Books
                 .Where(s => s.Title.Contains(searchString) || s.Category.Name.Contains(searchString))
                 .Include(a => a.Category)

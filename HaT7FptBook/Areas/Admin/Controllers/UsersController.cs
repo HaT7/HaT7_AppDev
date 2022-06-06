@@ -34,7 +34,6 @@ namespace HaT7FptBook.Areas.Admin.Controllers
 
         //============================== INDEX =====================================
         [HttpGet]
-        [Authorize(Roles = SD.Role_Admin)]
         public async Task<IActionResult> Index()
         {
             var claimIdentity = (ClaimsIdentity) User.Identity;
@@ -56,21 +55,41 @@ namespace HaT7FptBook.Areas.Admin.Controllers
         }
 
         //================================= DELETE =================================
-        [HttpGet]
-        [Authorize(Roles = SD.Role_Admin)]
+        // [HttpGet]
+        // public async Task<IActionResult> Delete(string id)
+        // {
+        //     var user = await _userManager.FindByIdAsync(id);
+        //     if (user == null)
+        //     {
+        //         return NotFound();
+        //     }
+        //         
+        //     await _userManager.DeleteAsync(user);
+        //
+        //     return RedirectToAction(nameof(Index));
+        // }
+
+        [HttpDelete]
         public async Task<IActionResult> Delete(string id)
         {
-            var user = await _userManager.FindByIdAsync(id);
-            if (user == null)
+            try
             {
-                return NotFound();
+                var user = await _userManager.FindByIdAsync(id);
+                if (user == null)
+                {
+                    return Json(new { success = false, message = "Error while Deleting" });
+                }
+        
+                await _userManager.DeleteAsync(user);
+                return Json(new { success = true, message = "Delete Successful" });
             }
-                
-            await _userManager.DeleteAsync(user);
-
-            return RedirectToAction(nameof(Index));
+            catch (Exception e)
+            {
+                //Console.WriteLine(e);
+                return Json(new { success = false, message = e.Message });
+            }
         }
-
+        
         //=============================== UPDATE ====================================
         private IEnumerable<SelectListItem> GetRole()
         {
@@ -82,7 +101,6 @@ namespace HaT7FptBook.Areas.Admin.Controllers
         }
 
         [HttpGet]
-        [Authorize(Roles = SD.Role_Admin)]
         public async Task<IActionResult> Update(string id)
         {
             if (id != null)
@@ -100,7 +118,6 @@ namespace HaT7FptBook.Areas.Admin.Controllers
         }
 
         [HttpPost]
-        [Authorize(Roles = SD.Role_Admin)]
         public async Task<IActionResult> Update(UpdateUserVM updataUserVm)
         {
             if (ModelState.IsValid)
@@ -128,7 +145,6 @@ namespace HaT7FptBook.Areas.Admin.Controllers
 
         // ====================== LOCK & UNLOCK =======================
         [HttpGet]
-        [Authorize(Roles = SD.Role_Admin)]
         public async Task<IActionResult> LockUnLock(string id)
         {
             var claimIdentity = (ClaimsIdentity) User.Identity;
@@ -162,7 +178,6 @@ namespace HaT7FptBook.Areas.Admin.Controllers
 
         //======================= CONFIRM EMAIL ===========================
         [HttpGet]
-        [Authorize(Roles = SD.Role_Admin)]
         public async Task<IActionResult> ConfirmEmail(string id)
         {
             var userInDb = _db.ApplicationUsers.Find(id);
@@ -181,7 +196,6 @@ namespace HaT7FptBook.Areas.Admin.Controllers
         }
 
         [HttpPost]
-        [Authorize(Roles = SD.Role_Admin)]
         public async Task<IActionResult> ConfirmEmail(ConfirmEmailVM confirmEmailVm)
         {
             if (ModelState.IsValid)
@@ -200,7 +214,6 @@ namespace HaT7FptBook.Areas.Admin.Controllers
 
         //======================= RESET PASSWORD ===========================
         [HttpGet]
-        [Authorize(Roles = SD.Role_Admin)]
         public async Task<IActionResult> ResetPassword(string token, string email)
         {
             if (token == null || email == null)
@@ -218,7 +231,6 @@ namespace HaT7FptBook.Areas.Admin.Controllers
         }
 
         [HttpPost]
-        [Authorize(Roles = SD.Role_Admin)]
         public async Task<IActionResult> ResetPassword(ResetPasswordVM resetPasswordVm)
         {
             if (ModelState.IsValid)

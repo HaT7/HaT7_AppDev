@@ -55,7 +55,8 @@
                                         </div>
                                     </div>
                                     <div class="col-2 col-sm-4 col-lg-2 text-right">
-                                        <a asp-action="remove" asp-route-cartId="@item.Id" class="btn btn-danger">
+                                        @* <a asp-action="remove" asp-route-cartId="@item.Id" class="btn btn-danger"> *@
+                                        <a class="btn btn-danger" onclick=Delete(@item.Id)>
                                             <i class="fas fa-trash"></i>
                                         </a>
                                     </div>
@@ -90,3 +91,36 @@
         <div> There is no item in shopping cart </div>
     }
 </form>
+
+@section Scripts{
+    <script>
+    function Delete(id){
+        swal({
+            title: "Are you sure?",
+            text: "Once deleted, you will not be able to recover this imaginary file!",
+            icon: "warning",
+            buttons: true,
+            dangerMode: true,
+        }).then((willDelete) => {
+            if (willDelete){
+                $.ajax({
+                    type: "DELETE",
+                    url: "/Customer/Carts/Delete/" + id,
+                    success: function (data){
+                        console.log(data)
+                        if(data.success){
+                            toastr.success(data.message);
+                            setTimeout(function(){
+                               window.location.reload(1);
+                            }, 500);
+                        }
+                        else {
+                            toastr.error(data.message);
+                        }
+                    }
+                });
+            }
+        });
+    }
+    </script>
+}

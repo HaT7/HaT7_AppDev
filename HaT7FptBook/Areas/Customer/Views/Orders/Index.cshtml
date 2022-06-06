@@ -8,29 +8,52 @@
 @if (Model.Any())
 {
     <h2 class="text-center">List Order</h2>
-    
-    <table style="width: 100%">
-        <thead>
-        <tr>
-            <th>Order Id</th>
-            <th>Order Date</th>
-            <th>Total</th>
-            <th>Action</th>
-        </tr>
-        </thead>
-        
-        @foreach (var order in @Model)
-        {
-            <tr>
-                <td>@order.Id</td>
-                <td>@order.OderDate</td>
-                <td>@order.Total</td>
-                <td>
-                    <a asp-controller="Orders" asp-action="OrderDetails" asp-route-orderHeaderId="@order.Id" class="btn btn-info">View Detail</a>
-                </td>
-            </tr>
-        }
-    </table>
+
+    <div class="card shadow mb-4">
+        <partial name="_StatusMessenger" model="@ViewData["Message"]"/>
+        <div class="card-body text-dark" style="background-color: #d3d4d4">
+            <div class="table-responsive font-weight-bold">
+                <table class="table table-bordered" id="dataTable">
+
+                    <thead>
+                    <tr>
+                        <th>Order Id</th>
+                        <th>Order Date</th>
+                        <th>Total</th>
+                        <th>Action</th>
+                    </tr>
+                    </thead>
+
+                    @if (Model.Count > 10)
+                    {
+                        <tfoot>
+                        <tr>
+                            <th>Order Id</th>
+                            <th>Order Date</th>
+                            <th>Total</th>
+                            <th>Action</th>
+                        </tr>
+                        </tfoot>
+                    }
+
+                    <tbody>
+                    @foreach (var order in @Model)
+                    {
+                        <tr>
+                            <td>@order.Id</td>
+                            <td>@order.OderDate</td>
+                            <td>@order.Total</td>
+                            <td>
+                                <a asp-controller="Orders" asp-action="OrderDetails" asp-route-orderHeaderId="@order.Id" class="btn btn-info">View Detail</a>
+                            </td>
+                        </tr>
+                    }
+
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
 }
 else
 {

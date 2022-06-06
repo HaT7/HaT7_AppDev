@@ -18,11 +18,11 @@
     {
         <div class="col-lg-3 col-md-6">
             <div class="row p-2">
-                <div class="col-12  p-1" style="border:1px solid #008cba; border-radius: 5px;">
+                <div class="home-product-item col-12 p-1" style="border:1px solid #008cba; border-radius: 5px;">
                     <div class="card" style="border:0px;">
-                        <img src="@product.ImageUrl" class="card-img-top rounded"/>
-                        <div class="pl-1">
-                            <p class="card-title h5">
+                        <img src="@product.ImageUrl" class="card-img-top rounded border"/>
+                        <div class="pl-1 pt-2">
+                            <p class="card-title h5" style="min-height: 48px">
                                 <b style="color:#2c3e50">@product.Title</b>
                             </p>
                             <p class="card-title text-primary">by <b>@product.Author</b></p>
@@ -56,3 +56,23 @@
         </ul>
     </nav>
 </div>
+
+<style>
+    .home-product-item {
+        display: block;
+        position: relative;
+        margin-top: 10px;
+        background-color: #fff;
+        border-radius: 2px;
+        box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.1);
+        transition: transform ease-in 0.1s;
+        will-change: transform;
+        border: 1px solid transparent;
+    }
+    
+    .home-product-item:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 1px 20px 0 rgba(0, 0, 0, 0.1);
+        border: 1px solid red !important;
+    }
+</style>

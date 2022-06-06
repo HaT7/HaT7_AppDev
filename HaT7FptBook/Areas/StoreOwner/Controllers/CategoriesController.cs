@@ -59,7 +59,6 @@ namespace HaT7FptBook.Areas.StoreOwner.Controllers
          [HttpDelete]
          public async Task<IActionResult> Delete(int id)
          {
-
              try
              {
                  var category = await _db.Categories.FindAsync(id);

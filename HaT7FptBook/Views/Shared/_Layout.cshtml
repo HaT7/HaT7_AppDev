@@ -10,6 +10,29 @@
     <title>@ViewData["Title"] - Fpt Book</title>
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css"/>
     <link rel="stylesheet" href="~/css/site.css"/>
+
+    <!-- Bootstrap core JavaScript-->
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+
+    <!-- Core plugin JavaScript-->
+    <script src="~/lib/jquery-easing/jquery.easing.min.js"></script>
+
+    <!-- Custom styles for this page -->
+    <link href="~/lib/datatables/dataTables.bootstrap4.min.css" rel="stylesheet">
+
+    <!-- Page level plugins -->
+    <script src="~/lib/datatables/jquery.dataTables.min.js"></script>
+    <script src="~/lib/datatables/dataTables.bootstrap4.min.js"></script>
+
+    <!-- Page level custom scripts -->
+    <script src="~/lib/datatables/datatables-demo.js"></script>
+
+    <!-- Alert -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/sweetalert/2.1.2/sweetalert.min.js" integrity="sha512-AA1Bzp5Q0K1KanKKmvN/4d3IRKVlv9PYgwFPvm32nPO6QS8yH1HO7LbgB1pgiOxPtfeg5zEn2ba64MUcqJx6CA==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+
+    <!-- Toastr -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/css/toastr.min.css"/>
 </head>
 <body>
 <header>
@@ -22,13 +45,13 @@
             </button>
             <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
                 <ul class="navbar-nav flex-grow-1">
-                    @if (User.IsInRole("Admin"))
-                    {
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="Admin" asp-controller="Users" asp-action="Index">User</a>
-                        </li>
-                    }
-                    
+                    @* @if (User.IsInRole("Admin")) *@
+                    @* { *@
+                    @*     <li class="nav-item"> *@
+                    @*         <a class="nav-link text-dark" asp-area="Admin" asp-controller="Users" asp-action="Index">User</a> *@
+                    @*     </li> *@
+                    @* } *@
+
                     @if (User.IsInRole("Customer"))
                     {
                         @if (HttpContextAccessor.HttpContext.Session.GetInt32(SD.ssShoppingCart) != null)
@@ -53,7 +76,7 @@
                                 </a>
                             </li>
                         }
-                        
+
                         <li class="nav-item">
                             <a class="nav-link text-dark" asp-area="Customer" asp-controller="Home" asp-action="Help">Help</a>
                         </li>
@@ -75,10 +98,11 @@
         &copy; 2022 - Fpt Book - <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
     </div>
 </footer>
-<script src="~/lib/jquery/dist/jquery.min.js"></script>
-<script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+
 <script src="~/js/site.js" asp-append-version="true"></script>
 <script src="https://kit.fontawesome.com/3a88035278.js" crossorigin="anonymous"></script>
+<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/js/toastr.min.js"></script>
+
 @await RenderSectionAsync("Scripts", required: false)
 </body>
 </html>

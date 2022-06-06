@@ -279,7 +279,7 @@ namespace HaT7FptBook.Areas.StoreOwner.Controllers
                         Title = reader.GetValue(2).ToString(),
                         Description = reader.GetValue(3).ToString(),
                         Author = reader.GetValue(4).ToString(),
-                        NoPage = (int)reader.GetValue(5).GetHashCode(),
+                        NoPage = Convert.ToInt32(reader.GetValue(5)),
                         Price = (double)reader.GetValue(6),
                         CategoryId = _db.Categories.FirstOrDefault(c => c.Name == reader.GetValue(7)).Id
                     };
