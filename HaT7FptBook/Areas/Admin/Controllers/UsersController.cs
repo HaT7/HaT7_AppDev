@@ -4,12 +4,9 @@ using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
 using HaT7FptBook.Data;
-using HaT7FptBook.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
-using HaT7FptBook.Data;
-using HaT7FptBook.Models;
 using HaT7FptBook.Utility;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using HaT7FptBook.ViewModels;
@@ -55,21 +52,7 @@ namespace HaT7FptBook.Areas.Admin.Controllers
         }
 
         //================================= DELETE =================================
-        // [HttpGet]
-        // public async Task<IActionResult> Delete(string id)
-        // {
-        //     var user = await _userManager.FindByIdAsync(id);
-        //     if (user == null)
-        //     {
-        //         return NotFound();
-        //     }
-        //         
-        //     await _userManager.DeleteAsync(user);
-        //
-        //     return RedirectToAction(nameof(Index));
-        // }
-
-        [HttpDelete]
+        [HttpGet]
         public async Task<IActionResult> Delete(string id)
         {
             try
@@ -77,19 +60,19 @@ namespace HaT7FptBook.Areas.Admin.Controllers
                 var user = await _userManager.FindByIdAsync(id);
                 if (user == null)
                 {
-                    return Json(new { success = false, message = "Error while Deleting" });
+                    return NotFound();
                 }
-        
+
                 await _userManager.DeleteAsync(user);
-                return Json(new { success = true, message = "Delete Successful" });
+
+                return RedirectToAction(nameof(Index));
             }
             catch (Exception e)
             {
-                //Console.WriteLine(e);
-                return Json(new { success = false, message = e.Message });
+                return RedirectToAction(nameof(Index));
             }
         }
-        
+
         //=============================== UPDATE ====================================
         private IEnumerable<SelectListItem> GetRole()
         {
@@ -118,20 +101,20 @@ namespace HaT7FptBook.Areas.Admin.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> Update(UpdateUserVM updataUserVm)
+        public async Task<IActionResult> Update(UpdateUserVM updateUserVm)
         {
             if (ModelState.IsValid)
             {
-                var userInDb = _db.ApplicationUsers.Find(updataUserVm.ApplicationUser.Id);
-                userInDb.FullName = updataUserVm.ApplicationUser.FullName;
-                userInDb.Address = updataUserVm.ApplicationUser.Address;
-                userInDb.PhoneNumber = updataUserVm.ApplicationUser.PhoneNumber;
+                var userInDb = await _db.ApplicationUsers.FindAsync(updateUserVm.ApplicationUser.Id);
+                userInDb.FullName = updateUserVm.ApplicationUser.FullName;
+                userInDb.Address = updateUserVm.ApplicationUser.Address;
+                userInDb.PhoneNumber = updateUserVm.ApplicationUser.PhoneNumber;
 
                 var oldRole = await _userManager.GetRolesAsync(userInDb);
-                if (oldRole.First() != updataUserVm.Role)
+                if (oldRole.First() != updateUserVm.Role)
                 {
                     await _userManager.RemoveFromRoleAsync(userInDb, oldRole.First());
-                    await _userManager.AddToRoleAsync(userInDb, updataUserVm.Role);
+                    await _userManager.AddToRoleAsync(userInDb, updateUserVm.Role);
                 }
 
                 _db.ApplicationUsers.Update(userInDb);
@@ -139,8 +122,8 @@ namespace HaT7FptBook.Areas.Admin.Controllers
                 return RedirectToAction(nameof(Index));
             }
 
-            updataUserVm.RoleList = GetRole();
-            return View(updataUserVm);
+            updateUserVm.RoleList = GetRole();
+            return View(updateUserVm);
         }
 
         // ====================== LOCK & UNLOCK =======================
